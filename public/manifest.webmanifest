@@ -1,0 +1,21 @@
+{
+  "name": "Firstlight — route planning for delivery fleets",
+  "short_name": "Firstlight",
+  "description": "A fictional route-planning product with a working routing simulation. Built by BrandShift.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f5f0",
+  "theme_color": "#15130f",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

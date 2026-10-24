@@ -27,6 +27,7 @@ const TARGETS = [
   '.depot-teaser__content > *',
   '.home-close__content > *',
   '.hero__intro > *',
+  '.next__list > li',
   '[data-reveal]',
 ].join(', ');
 
@@ -49,7 +50,12 @@ export function refreshReveal() {
   const fold = window.innerHeight;
   const els = document.querySelectorAll<HTMLElement>(`main :is(${TARGETS})`);
   els.forEach((el) => {
-    if (el.classList.contains('rv')) return;
+    if (el.classList.contains('rv-in')) return;
+    // already waiting from an earlier pass: the old observer is gone, so watch it again
+    if (el.classList.contains('rv')) {
+      io!.observe(el);
+      return;
+    }
     if (el.getBoundingClientRect().top < fold) return;
     // stagger among siblings that reveal together
     const parent = el.parentElement;

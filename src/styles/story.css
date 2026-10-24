@@ -913,3 +913,179 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Small premium details ──────────────────────────────────────────────── */
+::selection {
+  background: var(--amber-soft);
+  color: var(--ink);
+}
+
+/* reading progress: a hairline of amber along the bottom of the header (scroll-driven, CSS only) */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .masthead::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--amber), var(--amber-deep));
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: read-progress linear both;
+      animation-timeline: scroll(root block);
+      pointer-events: none;
+    }
+  }
+}
+
+@keyframes read-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* hero entrance: supporting lines rise in after the headline (transform only, so first paint isn't delayed) */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-field__kicker,
+  .hero-field__lede,
+  .hero-field__content > .hero-field__ctas,
+  .hero-guide li {
+    animation: rise-in 1000ms var(--ease) both;
+  }
+
+  .hero-field__kicker {
+    animation-delay: 60ms;
+  }
+
+  .hero-field__lede {
+    animation-delay: 220ms;
+  }
+
+  .hero-field__content > .hero-field__ctas {
+    animation-delay: 360ms;
+  }
+
+  .hero-guide li:nth-child(1) {
+    animation-delay: 520ms;
+  }
+
+  .hero-guide li:nth-child(2) {
+    animation-delay: 600ms;
+  }
+
+  .hero-guide li:nth-child(3) {
+    animation-delay: 680ms;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    transform: translateY(18px);
+  }
+}
+
+/* the story sits on a fine dot grid with a warm glow behind the map */
+.story {
+  position: relative;
+  background-color: var(--paper);
+  background-image: radial-gradient(rgb(21 19 15 / 0.07) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+.story__frame::before {
+  content: '';
+  position: absolute;
+  inset: -12% -8%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(242 169 59 / 0.22), transparent);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.story__frame {
+  isolation: auto;
+  overflow: visible;
+}
+
+.story__stage {
+  overflow: hidden;
+}
+
+/* ─── Proof strip under the hero ─────────────────────────────────────────── */
+.proof {
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.proof__list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  list-style: none;
+}
+
+.proof__list li {
+  display: grid;
+  gap: 2px;
+  padding: 22px 18px;
+  border-left: 1px solid var(--rule);
+}
+
+.proof__list li:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.proof__v {
+  font-size: 1.45rem;
+  font-weight: 640;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.proof__k {
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+
+@media (max-width: 900px) {
+  .proof__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .proof__list li,
+  .proof__list li:first-child {
+    padding: 16px 12px;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .proof__list li:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  .proof__list li:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.story__pin {
+  isolation: isolate;
+}
+
+.story__frame > .story__hud {
+  border-radius: var(--r-l) var(--r-l) 0 0;
+}
+
+.story__bar {
+  overflow: hidden;
+  border-radius: 0 0 var(--r-l) var(--r-l);
+}
+
+/* the glow behind the story map must not widen the page on narrow screens */
+.story {
+  overflow-x: clip;
+}

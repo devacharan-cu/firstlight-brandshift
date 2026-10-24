@@ -4,6 +4,7 @@ import { findRoute, getLoaded } from './routes';
 import { SiteHeader } from './shell/SiteHeader';
 import { SiteFooter } from './shell/SiteFooter';
 import { NextSteps } from './shell/NextSteps';
+import { ErrorBoundary } from './shell/ErrorBoundary';
 import { AppShell } from './shell/AppShell';
 import { initSimulation } from './sim/store';
 import { refreshDaylight, startDaylight } from './lib/daylight';
@@ -38,7 +39,9 @@ export function App() {
     return () => cancelAnimationFrame(raf);
   }, [loc.path, route.chrome, route.title]);
 
-  const content = Page ? <Page /> : <div className="page-loading" aria-busy="true" />;
+  const content = (
+    <ErrorBoundary resetKey={loc.path}>{Page ? <Page /> : <div className="page-loading" aria-busy="true" />}</ErrorBoundary>
+  );
 
   return (
     <>

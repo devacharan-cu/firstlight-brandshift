@@ -64,6 +64,30 @@ function Hero() {
   );
 }
 
+/** Facts a buyer can check on this site, measured on the build (see the case study). */
+const PROOF = [
+  { v: '0.3 s', k: 'to plan 300 orders, in your browser' },
+  { v: '9', k: 'working console screens' },
+  { v: '100', k: 'Lighthouse accessibility score' },
+  { v: '142', k: 'automated checks, all passing' },
+  { v: '0', k: 'cookies, trackers or third-party calls' },
+];
+
+function Proof() {
+  return (
+    <section className="proof" aria-label="Measured on this site">
+      <ul className="wrap proof__list">
+        {PROOF.map((p) => (
+          <li key={p.k}>
+            <span className="proof__v mono">{p.v}</span>
+            <span className="proof__k">{p.k}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function Planning() {
   const compact = useMediaQuery('(max-width: 720px)');
   const n = useSim((s) => s.scenario?.orders.length ?? s.stopCount);
@@ -207,6 +231,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <Proof />
       <div id="story">
         <DayStory />
       </div>

@@ -127,7 +127,18 @@ These are measurements of a simulation and a build, not customer outcomes.
 
 ## Deployment
 
-**Not deployed.** Nothing has been published. To deploy, upload `dist/` to any static host after `npm run build`.
+Deployed on Vercel from this repository (`vercel.json`): `npm ci`, `npm run build`, serve `dist/`. The config also sets
+the security headers (a strict Content-Security-Policy with no inline scripts and no third-party origins, HSTS,
+`X-Frame-Options: DENY`, `nosniff`, a restrictive Permissions-Policy) and long-lived caching for hashed assets.
+
+At build time the prerenderer writes canonical URLs, Open Graph and Twitter cards, JSON-LD, `sitemap.xml` and
+`robots.txt` for the production domain (`SITE_URL`, or Vercel's `VERCEL_PROJECT_PRODUCTION_URL`). Any other static host
+works too: upload `dist/`.
+
+## Licence
+
+The source code is released under the [MIT License](LICENSE). The photographs, footage and panorama in `public/media/`
+are **not** covered by it: each keeps its own licence (Pexels, Unsplash, CC0), as listed in `media/manifest.json`.
 
 ## Credits
 
