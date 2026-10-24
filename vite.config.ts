@@ -1,6 +1,7 @@
 /// <reference types="vitest/config" />
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 /**
@@ -28,8 +29,32 @@ function inlineCss(): Plugin {
   };
 }
 
+/**
+ * Make `vite preview` serve the prerendered pages the way a static host does: /platform reads
+ * dist/platform/index.html, and an unknown path gets dist/404.html with a 404 status.
+ */
+function staticPages(): Plugin {
+  return {
+    name: 'static-pages',
+    configurePreviewServer(server) {
+      const dist = resolve(import.meta.dirname, 'dist');
+      server.middlewares.use((req, res, next) => {        const url = new URL(req.url ?? '/', 'http://x');
+        const path = decodeURIComponent(url.pathname).replace(/\/$/, '');
+        if (req.method !== 'GET' || path === '' || /\.[a-z0-9]+$/i.test(path)) return next();
+        const page = resolve(dist, `.${path}/index.html`);
+        if (page.startsWith(dist) && existsSync(page)) {
+          req.url = `${path}/index.html${url.search}`;
+          return next();
+        }
+        res.writeHead(404, { 'content-type': 'text/html; charset=utf-8' });
+        res.end(readFileSync(resolve(dist, '404.html')));
+      });
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), inlineCss()],
+  plugins: [react(), inlineCss(), staticPages()],
   build: {
     target: 'es2022',
     rollupOptions: {

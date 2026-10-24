@@ -411,9 +411,8 @@ export async function assignOrder(order: number, van: number, position: number) 
   await replaceLive(routes, `${state.scenario!.orders[order].id} assigned to Van ${pad(van + 1)}`, 'dispatch');
 }
 
-export function unassignedOrders(): number[] {
-  const sc = state.scenario;
-  const live = state.live;
+/** Orders in the scenario that no van in the live plan carries yet (urgent orders waiting for dispatch). */
+export function unassignedOrders(sc: Scenario | null = state.scenario, live: PlanView | null = state.live): number[] {
   if (!sc || !live) return [];
   const on = new Set(live.routes.flat());
   return sc.orders.map((_, i) => i).filter((i) => !on.has(i));

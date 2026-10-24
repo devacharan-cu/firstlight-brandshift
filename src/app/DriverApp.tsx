@@ -87,7 +87,9 @@ export default function DriverApp() {
                 ) : (
                   <div className="nextstop">
                     <p className="nextstop__name">All {s.stops.length} drops done.</p>
-                    <p className="nextstop__addr">Head back to the depot · due {clock(s.end)}</p>
+                    <p className="nextstop__addr">
+                      {t >= s.end ? `Back at the depot since ${clock(s.end)}` : `Head back to the depot · due ${clock(s.end)}`}
+                    </p>
                   </div>
                 )}
                 <ol className="phone__list" aria-label="Upcoming stops">

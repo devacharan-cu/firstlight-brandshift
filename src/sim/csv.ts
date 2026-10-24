@@ -55,7 +55,8 @@ export function ordersToCsv(city: City, orders: Order[]): string {
 }
 
 export function parseOrdersCsv(city: City, text: string, maxUnits: number, depotNode: number, limit = 500): CsvResult {
-  const lines = text.replace(/^﻿/, '').split(/\r?\n/);
+  const lines = text.split(/\r?\n/);
+  if (lines[0]?.charCodeAt(0) === 0xfeff) lines[0] = lines[0].slice(1); // Excel's byte-order mark
   const issues: CsvIssue[] = [];
   const orders: Order[] = [];
   const used = new Set<number>([depotNode]);

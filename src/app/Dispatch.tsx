@@ -27,7 +27,7 @@ export default function Dispatch() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const waiting = useMemo(() => (live ? unassignedOrders() : []), [live, scenario]); // eslint-disable-line react-hooks/exhaustive-deps
+  const waiting = useMemo(() => unassignedOrders(scenario, live), [live, scenario]);
 
   if (!live || !scenario) return <Planning />;
   const cap = scenario.fleet.capacity;
@@ -209,10 +209,10 @@ export default function Dispatch() {
               <li key={k}>
                 <VanChip van={k} to={`/app/fleet?van=${k + 1}`} />
                 <span className="balance__bars">
-                  <span className="balance__bar" aria-label={`Load ${st.load} of ${cap} ${units}`}>
+                  <span className="balance__bar" role="img" aria-label={`Load ${st.load} of ${cap} ${units}`}>
                     <span style={{ width: `${Math.min(100, (st.load / cap) * 100)}%`, background: routeColor(k) }} />
                   </span>
-                  <span className="balance__bar balance__bar--shift" aria-label={`Shift ${hrs(st.duration)} of ${shift / 3600} hours`}>
+                  <span className="balance__bar balance__bar--shift" role="img" aria-label={`Shift ${hrs(st.duration)} of ${shift / 3600} hours`}>
                     <span style={{ width: `${Math.min(100, (st.duration / shift) * 100)}%` }} />
                   </span>
                 </span>

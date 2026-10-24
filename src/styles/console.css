@@ -80,6 +80,7 @@
 .console__back {
   display: inline-flex;
   align-items: center;
+  min-height: 32px;
   gap: 8px;
   color: #efe8da;
   font-weight: 600;
@@ -172,6 +173,7 @@
 }
 
 .simclock__play {
+  flex: none;
   display: grid;
   place-items: center;
   width: 38px;
@@ -290,6 +292,9 @@
 
 .table-wrap {
   overflow-x: auto;
+  /* contain absolutely positioned descendants (visually hidden labels) so they scroll with
+     the table instead of widening the page */
+  position: relative;
 }
 
 .dtable {
@@ -328,10 +333,16 @@
 .vanchip {
   display: inline-flex;
   align-items: center;
+  min-height: 24px;
   gap: 7px;
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
+}
+
+/* inline links: padding grows the tap target to 24 px without moving the line */
+.console__page a:not(.btn, .vanchip, .console__link) {
+  padding-block: 2px;
 }
 
 a.vanchip:hover {
@@ -471,7 +482,7 @@ a.vanchip:hover {
 .feed__item--dispatch .feed__time,
 .feed__item--edit .feed__time,
 .feed__item--disruption .feed__time {
-  color: var(--amber-deep);
+  color: var(--amber-text);
 }
 
 /* ─── Responsive console ────────────────────────────────────────────────── */
@@ -487,10 +498,13 @@ a.vanchip:hover {
 
 @media (max-width: 860px) {
   .console {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    /* spare height goes to the page, not the nav bar (it would shrink once content loads) */
+    grid-template-rows: auto 1fr;
   }
 
   .console__side {
+    min-width: 0;
     position: sticky;
     top: 0;
     z-index: 30;
@@ -503,9 +517,22 @@ a.vanchip:hover {
   }
 
   .console__env,
-  .console__foot,
-  .console__link span {
+  .console__foot {
     display: none;
+  }
+
+  /* icon-only on phones; the label stays for screen readers */
+  .console__link {
+    position: relative;
+  }
+
+  .console__link span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 
   .console__side nav ul {
@@ -530,6 +557,11 @@ a.vanchip:hover {
     padding: 12px 16px;
   }
 
+  /* its own line from the start, so the longer text after planning doesn't wrap and push the page */
+  .livebadge {
+    flex-basis: 100%;
+  }
+
   .simclock {
     margin-left: 0;
     width: 100%;
@@ -545,6 +577,11 @@ a.vanchip:hover {
 
   .kpis {
     grid-template-columns: 1fr 1fr;
+  }
+
+  /* an odd tile out spans the row instead of leaving a grey gap */
+  .kpis > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 }
 
@@ -1248,11 +1285,6 @@ a.vanpick__btn {
   font-size: 0.88rem;
 }
 
-.compare-options td {
-  white-space: normal;
-  line-height: 1.45;
-}
-
 .breakdown__unit {
   grid-column: 2;
 }
@@ -1298,7 +1330,7 @@ a.vanpick__btn {
 .option.is-recommended {
   background: rgb(242 169 59 / 0.1);
   border-color: rgb(180 95 0 / 0.45);
-  border-left-color: var(--amber-deep);
+  border-left-color: var(--amber-text);
 }
 
 .option__name {

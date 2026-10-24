@@ -44,7 +44,6 @@ const photos = {};
 for (const p of manifest.photos) {
   const meta = await sharp(p.src).metadata();
   const widths = [480, 960, 1600, 2400].filter((w) => w <= meta.width);
-  const h = (w) => Math.round((meta.height / meta.width) * w);
   const img = await graded(p.src, p.redact);
   const buf = await img.toBuffer();
   for (const w of widths) {

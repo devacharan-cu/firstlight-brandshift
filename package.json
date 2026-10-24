@@ -9,10 +9,13 @@
     "preview": "vite preview --port 4173",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run tests/solver.test.ts",
+    "test": "vitest run tests/solver.test.ts tests/ops.test.ts tests/csv.test.ts",
     "bench": "vitest run tests/bench.test.ts",
     "check:browser": "node scripts/shoot.mjs && node scripts/a11y-check.mjs",
+    "check:sweep": "node scripts/shoot.mjs",
+    "check:a11y": "node scripts/a11y-check.mjs",
     "check:paint": "node scripts/paint.mjs",
+    "shots:case": "node scripts/case-shots.mjs",
     "media": "node scripts/media.mjs"
   },
   "dependencies": {

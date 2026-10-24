@@ -1,3 +1,86 @@
+/*
+ * Overpass draws U+00B7 (middle dot) with zero advance width in every weight, so "a · b"
+ * renders as "a ·b". Take that one character from the system's sans-serif instead; if none of
+ * these is installed, Overpass's own glyph is used as before. One face per loaded weight: a
+ * unicode-range face only combines with faces whose descriptors match exactly.
+ */
+@font-face {
+  font-family: 'Overpass';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Arial'), local('Segoe UI'), local('Helvetica Neue'), local('Helvetica'), local('Roboto'), local('Noto Sans'),
+    local('DejaVu Sans'), local('Liberation Sans');
+  unicode-range: U+00B7;
+}
+
+@font-face {
+  font-family: 'Overpass';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Segoe UI Semibold'), local('Helvetica Neue Medium'), local('Roboto Medium'),
+    local('Arial'), local('Roboto'), local('Noto Sans'), local('DejaVu Sans');
+  unicode-range: U+00B7;
+}
+
+@font-face {
+  font-family: 'Overpass';
+  font-style: normal;
+  font-weight: 800;
+  src: local('Arial Black'), local('Arial Bold'), local('Arial-BoldMT'), local('Segoe UI Black'), local('Helvetica Neue Bold'),
+    local('Roboto Black'), local('Roboto Bold'), local('Arial'), local('Roboto'), local('Noto Sans'), local('DejaVu Sans');
+  unicode-range: U+00B7;
+}
+
+/*
+ * Metric-matched fallbacks: until Overpass arrives, text is set in Arial (or a metric twin)
+ * scaled to Overpass's width and line metrics, so the swap doesn't reflow the page. Measured
+ * in Chrome against the self-hosted files: width ratio of a sample paragraph, ascent 0.88 em,
+ * descent 0.38 em.
+ */
+@font-face {
+  font-family: 'Overpass Fallback';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('Arimo');
+  size-adjust: 101.04%;
+  ascent-override: 87.09%;
+  descent-override: 37.61%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Overpass Fallback';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Arimo Bold');
+  size-adjust: 96.71%;
+  ascent-override: 90.99%;
+  descent-override: 39.29%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Overpass Fallback';
+  font-style: normal;
+  font-weight: 800;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Arimo Bold');
+  size-adjust: 99.67%;
+  ascent-override: 88.29%;
+  descent-override: 38.13%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Overpass Mono Fallback';
+  font-style: normal;
+  font-weight: 400 800;
+  src: local('Courier New'), local('CourierNewPSMT'), local('Liberation Mono'), local('Cousine');
+  size-adjust: 101.82%;
+  ascent-override: 86.43%;
+  descent-override: 37.32%;
+  line-gap-override: 0%;
+}
+
 /* ─── Tokens ─────────────────────────────────────────────────────────────── */
 :root {
   --paper: rgb(220 224 223); /* driven by the daylight clock */
@@ -10,13 +93,14 @@
   --rule-strong: rgb(23 20 15 / 0.38);
   --amber: #f2a93b;
   --amber-deep: #b45f00;
+  --amber-text: #804100; /* amber for small text: 4.5:1 on every paper tone of the day */
   --ok: #0e7c86;
   --warn: #b3261e;
   --night: #15120e;
   --night-paper: #efe4d0;
 
-  --sans: 'Overpass', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --mono: 'Overpass Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --sans: 'Overpass', 'Overpass Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Overpass Mono', 'Overpass Mono Fallback', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
   --gutter: clamp(16px, 3.2vw, 44px);
   --max: 1440px;
@@ -293,6 +377,7 @@ p {
 
 .btn--primary {
   background: var(--amber);
+  color: var(--ink);
   box-shadow: var(--shadow-print);
 }
 
@@ -480,10 +565,6 @@ p {
   .chapter__time small {
     margin: 0;
   }
-}
-
-.chapters-pending {
-  min-height: 100vh;
 }
 
 /* ─── Hero ───────────────────────────────────────────────────────────────── */

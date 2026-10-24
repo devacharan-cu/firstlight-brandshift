@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Chapter } from './Chapter';
+import { Link } from '../router';
 
 type Currency = 'INR' | 'USD';
 
@@ -33,18 +34,14 @@ const fmt = (v: number, c: Currency) =>
     ? `₹${Math.round(v).toLocaleString('en-IN')}`
     : `$${Math.round(v).toLocaleString('en-US')}`;
 
-export function Pricing() {
+/** The calculator and tiers; used bare on the pricing page and inside a chapter elsewhere. */
+export function PricingTool() {
   const [cur, setCur] = useState<Currency>('INR');
   const [vans, setVans] = useState(25);
   const [annual, setAnnual] = useState(true);
   const factor = annual ? 0.85 : 1;
 
   return (
-    <Chapter id="pricing" clock="19:20" note="Pricing" title="Priced per van, so it grows with the fleet.">
-      <p className="chapter__lede">
-        Pay for the vans you plan, nothing per stop and nothing per driver. The prices below are illustrative: Firstlight is a
-        fictional product.
-      </p>
       <div className="pricing">
         <div className="pricing__controls">
           <div className="field">
@@ -77,7 +74,7 @@ export function Pricing() {
           </div>
           <div className="seg" role="group" aria-label="Billing period">
             <button aria-pressed={annual} onClick={() => setAnnual(true)}>
-              Yearly · −15%
+              Yearly, save 15%
             </button>
             <button aria-pressed={!annual} onClick={() => setAnnual(false)}>
               Monthly
@@ -116,9 +113,9 @@ export function Pricing() {
                     <li key={f}>{f}</li>
                   ))}
                 </ul>
-                <a className={`btn ${'featured' in t && t.featured ? 'btn--primary' : 'btn--quiet'}`} href="#book">
+                <Link className={`btn ${'featured' in t && t.featured ? 'btn--primary' : 'btn--quiet'}`} to="/demo">
                   {per === null ? 'Talk to us' : 'Book a walkthrough'}
-                </a>
+                </Link>
               </article>
             );
           })}
@@ -128,6 +125,17 @@ export function Pricing() {
           depots and time windows are listed for completeness; they are not part of this demonstration’s solver.
         </p>
       </div>
+  );
+}
+
+export function Pricing() {
+  return (
+    <Chapter id="pricing" clock="19:20" note="Pricing" title="Priced per van, so it grows with the fleet.">
+      <p className="chapter__lede">
+        Pay for the vans you plan, nothing per stop and nothing per driver. The prices below are illustrative: Firstlight is a
+        fictional product.
+      </p>
+      <PricingTool />
     </Chapter>
   );
 }

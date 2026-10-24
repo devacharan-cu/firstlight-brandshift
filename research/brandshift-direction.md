@@ -280,3 +280,7 @@ These scores are my judgment, not measurements. B's strength is that it's the ea
   - mobile-onfleet.png
   - mobile-felt.png
   - mobile-linear.png
+
+---
+
+**Phase 3 addendum:** buyer evidence, case-study patterns, live inspections and the photography policy for the multi-page flagship are in [`flagship-phase3.md`](flagship-phase3.md).

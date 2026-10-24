@@ -89,6 +89,30 @@ export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
     };
   }, [mega, menu]);
 
+  // The panel is rendered after the nav (it spans the full width), so keep Tab order as if it
+  // followed its button: Tab from the button enters it, Tab past its end continues to the next link.
+  const megaLinks = () => [...(megaRef.current?.querySelectorAll<HTMLElement>('a[href]') ?? [])];
+  const onMegaBtnKey = (e: React.KeyboardEvent) => {
+    if (!mega || e.key !== 'Tab' || e.shiftKey) return;
+    const first = megaLinks()[0];
+    if (!first) return;
+    e.preventDefault();
+    first.focus();
+  };
+  const onMegaKey = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab') return;
+    const links = megaLinks();
+    const btn = megaBtn.current;
+    if (e.shiftKey && document.activeElement === links[0]) {
+      e.preventDefault();
+      btn?.focus();
+    } else if (!e.shiftKey && document.activeElement === links[links.length - 1]) {
+      e.preventDefault();
+      (btn?.closest('li')?.nextElementSibling?.querySelector<HTMLElement>('a[href]') ?? btn)?.focus();
+      setMega(false);
+    }
+  };
+
   const productActive = [...PRODUCT_LINKS.platform, ...PRODUCT_LINKS.console].some((l) => l.to === loc.path);
 
   return (
@@ -120,6 +144,7 @@ export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
               aria-expanded={mega}
               aria-controls="mega"
               onClick={() => setMega((m) => !m)}
+              onKeyDown={onMegaBtnKey}
             >
               Product <span aria-hidden>▾</span>
             </button>
@@ -150,7 +175,7 @@ export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
       </nav>
 
       {mega && (
-        <div className="mega" id="mega" ref={megaRef}>
+        <div className="mega" id="mega" ref={megaRef} onKeyDown={onMegaKey}>
           <div className="mega__inner">
             <section>
               <p className="label">The platform</p>

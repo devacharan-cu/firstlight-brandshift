@@ -119,7 +119,7 @@ export default function Tower() {
                       )}
                     </td>
                     <td>
-                      <span className="progress" aria-label={`${d} of ${s.stops.length} drops`}>
+                      <span className="progress" role="img" aria-label={`${d} of ${s.stops.length} drops`}>
                         <span style={{ width: `${(d / s.stops.length) * 100}%` }} />
                       </span>
                       <span className="mono muted">
