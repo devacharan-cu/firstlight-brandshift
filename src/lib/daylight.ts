@@ -40,6 +40,12 @@ const parse = (s: string) => {
 let paperNow = 'rgb(220 224 223)';
 export const currentPaper = () => paperNow;
 
+let refresh: () => void = () => {};
+/** Re-reads the page after a route change (new sections, new clock). */
+export function refreshDaylight() {
+  refresh();
+}
+
 export function startDaylight() {
   const root = document.documentElement;
   const clockEls = () => document.querySelectorAll<HTMLElement>('[data-live-clock]');
@@ -74,6 +80,10 @@ export function startDaylight() {
   };
   const onScroll = () => {
     if (!raf) raf = requestAnimationFrame(update);
+  };
+  refresh = () => {
+    last = -1;
+    update();
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });

@@ -56,15 +56,30 @@ export function useLocation(): Location {
 
 const reducedMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+let preloader: ((path: string) => Promise<void>) | null = null;
+/** Lets the app load a page chunk before navigation commits, so pages never flash a fallback. */
+export function setPreloader(fn: (path: string) => Promise<void>) {
+  preloader = fn;
+}
+
 type DocWithVT = Document & { startViewTransition?: (cb: () => void) => { finished: Promise<void> } };
 
-export function navigate(to: string, opts: { replace?: boolean; keepScroll?: boolean } = {}) {
+export async function navigate(to: string, opts: { replace?: boolean; keepScroll?: boolean } = {}) {
   const url = new URL(to, window.location.href);
   if (url.origin !== window.location.origin) {
     window.location.href = to;
     return;
   }
   const samePage = normalise(url.pathname) === current.path;
+  if (!samePage) {
+    try {
+      await preloader?.(normalise(url.pathname));
+    } catch {
+      // a failed chunk load falls back to a full page load
+      window.location.href = to;
+      return;
+    }
+  }
   const apply = () => {
     if (opts.replace) window.history.replaceState(null, '', url);
     else window.history.pushState(null, '', url);
@@ -98,13 +113,21 @@ export function Link({
     const url = new URL(to, window.location.href);
     if (url.origin !== window.location.origin) return;
     e.preventDefault();
-    navigate(to, { replace, keepScroll });
+    void navigate(to, { replace, keepScroll });
+  };
+  const warm = () => {
+    try {
+      const url = new URL(to, window.location.href);
+      if (url.origin === window.location.origin) void preloader?.(normalise(url.pathname));
+    } catch {
+      /* ignore */
+    }
   };
   const loc = useLocation();
   const target = normalise(new URL(to, 'http://x' + loc.path).pathname);
   const isCurrent = target === loc.path && !to.includes('#');
   return (
-    <a href={to} onClick={handle} aria-current={isCurrent ? 'page' : undefined} {...rest}>
+    <a href={to} onClick={handle} onMouseEnter={warm} onFocus={warm} aria-current={isCurrent ? 'page' : undefined} {...rest}>
       {children}
     </a>
   );

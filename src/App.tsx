@@ -1,51 +1,59 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
-import { Untangle } from './components/Untangle';
-import { Masthead } from './components/Masthead';
+import { useEffect, useRef, useState } from 'react';
+import { useDocumentMeta, useLocation } from './router';
+import { findRoute, getLoaded } from './routes';
+import { SiteHeader } from './shell/SiteHeader';
+import { SiteFooter } from './shell/SiteFooter';
+import { AppShell } from './shell/AppShell';
 import { initSimulation } from './sim/store';
-import { startDaylight } from './lib/daylight';
-import { useMediaQuery } from './lib/hooks';
-
-const Chapters = lazy(() => import('./components/Chapters'));
+import { refreshDaylight, startDaylight } from './lib/daylight';
 
 export function App() {
-  const compact = useMediaQuery('(max-width: 720px)');
-  // the stop count is decided once per visit so the scenario stays stable on rotate/resize
-  const [stopCount] = useState(() => (matchMedia('(max-width: 720px)').matches ? 120 : 300));
+  const loc = useLocation();
+  const route = findRoute(loc.path);
+  const Page = getLoaded(loc.path);
+  const [announce, setAnnounce] = useState('');
+  const first = useRef(true);
+  useDocumentMeta(route.title, route.description);
 
   useEffect(() => {
-    initSimulation(stopCount);
-  }, [stopCount]);
-
+    initSimulation(matchMedia('(max-width: 720px)').matches);
+  }, []);
   useEffect(() => startDaylight(), []);
+
+  useEffect(() => {
+    refreshDaylight();
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    // After client-side navigation, move focus to the new page and announce it,
+    // as a full page load would for screen-reader users.
+    const main = document.getElementById(route.chrome === 'app' ? 'console-main' : 'main');
+    main?.focus({ preventScroll: true });
+    setAnnounce(route.title);
+  }, [loc.path, route.chrome, route.title]);
+
+  const content = Page ? <Page /> : <div className="page-loading" aria-busy="true" />;
 
   return (
     <>
-      <a className="skip" href="#main">
-        Skip to content
-      </a>
-      <Masthead />
-      <main id="main">
-        <section className="hero" data-clock="05:40" id="top" aria-labelledby="hero-title">
-          <div className="hero__intro">
-            <p className="label eyebrow">Route planning for delivery fleets</p>
-            <h1 id="hero-title">
-              Tomorrow’s routes, <em>untangled</em> before first light.
-            </h1>
-            <p className="hero__lede">
-              Firstlight turns a day of orders into van routes that respect every crate limit and every driver’s shift — in seconds,
-              not a dispatcher’s whole morning.
-            </p>
-            <p className="hero__links">
-              <a href="#pricing">See pricing →</a>
-              <a href="#how">How the planner works</a>
-            </p>
-          </div>
-          <Untangle compact={compact} />
-        </section>
-        <Suspense fallback={<div className="chapters-pending" aria-busy="true" />}>
-          <Chapters />
-        </Suspense>
-      </main>
+      <p className="sr-only" aria-live="polite">
+        {announce}
+      </p>
+      {route.chrome === 'app' ? (
+        <AppShell>{content}</AppShell>
+      ) : (
+        <>
+          <a className="skip" href="#main">
+            Skip to content
+          </a>
+          <SiteHeader overlay={loc.path === '/'} />
+          <main id="main" tabIndex={-1} data-clock="10:00">
+            {content}
+          </main>
+          <SiteFooter />
+        </>
+      )}
     </>
   );
 }

@@ -112,6 +112,13 @@ export const ROUTES: RouteDef[] = [
     chrome: 'site',
     load: () => import('./pages/CaseStudyPage'),
   },
+  {
+    path: '/credits',
+    title: T('Photography & credits'),
+    description: 'Every photograph, clip and panorama on this site, its photographer, source and licence.',
+    chrome: 'site',
+    load: () => import('./pages/Credits'),
+  },
   // ── the console ──────────────────────────────────────────────────────────
   {
     path: '/app',

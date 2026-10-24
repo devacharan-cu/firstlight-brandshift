@@ -5,6 +5,7 @@ import { planScenario, buildProblem, geometryFor } from './plan';
 import { disrupt } from './disruption';
 import { zoneOf, type Scenario } from './scenario';
 import { baselinePlan, evaluate } from './solver';
+import { breakdown, insertionOptions, moveOrder, viewOf } from './ops';
 import type { WorkerRequest, WorkerResponse } from './protocol';
 
 let city: City | null = null;
@@ -36,18 +37,26 @@ function baselineOnly(c: City, tc: TreeCache, scenario: Scenario) {
 
 self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   const msg = e.data;
+  const done = (result: unknown) => post({ type: 'result', id: msg.id, result } as WorkerResponse);
   try {
     const { city: c, cache: tc } = ensure();
-    if (msg.type === 'baseline') {
-      post({ type: 'baseline', id: msg.id, result: baselineOnly(c, tc, msg.scenario) });
-    } else if (msg.type === 'plan') {
-      const result = planScenario(c, msg.scenario, tc, (phase, k, of) =>
-        post({ type: 'progress', id: msg.id, phase, k, of }),
-      );
-      post({ type: 'plan', id: msg.id, result });
-    } else if (msg.type === 'disrupt') {
-      const result = disrupt(c, msg.scenario, msg.planned, msg.closedEdge);
-      post({ type: 'disrupt', id: msg.id, result });
+    switch (msg.type) {
+      case 'baseline':
+        return done(baselineOnly(c, tc, msg.scenario));
+      case 'plan':
+        return done(planScenario(c, msg.scenario, tc, (phase, k, of) => post({ type: 'progress', id: msg.id, phase, k, of })));
+      case 'disrupt':
+        return done(disrupt(c, msg.scenario, msg.planned, msg.closedEdge));
+      case 'evaluate':
+        return done(viewOf(c, msg.scenario, tc, msg.routes));
+      case 'insertOptions':
+        return done(insertionOptions(msg.scenario, tc, msg.routes, msg.order, msg.frozen));
+      case 'move': {
+        const move = moveOrder(msg.scenario, tc, msg.routes, msg.order, msg.toVan, msg.frozen);
+        return done({ move, view: viewOf(c, msg.scenario, tc, move.routes) });
+      }
+      case 'breakdown':
+        return done(breakdown(c, msg.scenario, tc, msg.routes, msg.van, msg.frozen));
     }
   } catch (err) {
     post({ type: 'error', id: msg.id, message: err instanceof Error ? err.message : String(err) });

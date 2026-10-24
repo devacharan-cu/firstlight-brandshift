@@ -16,6 +16,7 @@ import { LAMBDAS } from '../sim/solver';
 import { currentPaper } from '../lib/daylight';
 import { fmtH, fmtKm, useReducedMotion, useTween } from '../lib/hooks';
 import type { ProgressPhase } from '../sim/protocol';
+import { PROFILE_UNIT } from '../sim/scenario';
 
 const FULL = { ghost: 0.12, fadeMs: 750, delay: 420, stagger: 115, draw: 1400 };
 const SHORT = { ghost: 0.12, fadeMs: 300, delay: 120, stagger: 50, draw: 800 };
@@ -54,7 +55,7 @@ interface Hover {
   y: number;
 }
 
-export function Untangle({ compact }: { compact: boolean }) {
+export function Untangle({ compact, startRevealed = false }: { compact: boolean; startRevealed?: boolean }) {
   const city = getCity();
   const scenario = useSim((s) => s.scenario);
   const baseline = useSim((s) => s.baseline);
@@ -68,6 +69,7 @@ export function Untangle({ compact }: { compact: boolean }) {
 
   const [view, setView] = useState<'baseline' | 'optimized'>('baseline');
   const [revealed, setRevealed] = useState(false);
+  const settingsProfile = useSim((s) => s.settings.profile);
   const [intro, setIntro] = useState(false);
   const [animating, setAnimating] = useState(false);
   const [addMode, setAddMode] = useState(false);
@@ -363,6 +365,11 @@ export function Untangle({ compact }: { compact: boolean }) {
       `Planned: ${s.vans} vans and ${fmtKm(s.distance)} kilometres, compared with ${b.vans} vans and ${fmtKm(b.distance)} kilometres in the manual plan.`,
     );
   }, [plan, revealed, reduced]);
+
+  // in the console the planner opens on the solved plan, animating once it arrives
+  useEffect(() => {
+    if (startRevealed && plan && !revealed) setRevealed(true);
+  }, [startRevealed, plan, revealed]);
 
   // after an edit, re-plan automatically once the visitor has seen the optimiser
   useEffect(() => {
@@ -685,8 +692,10 @@ export function Untangle({ compact }: { compact: boolean }) {
         </div>
         <figcaption className="sheet__note">
           Simulation. {n} generated orders on Kesarnagar, a procedurally generated fictional city. Distances are shortest paths on
-          its street graph; vans average 18 km/h with 6 minutes per stop, 90 crates and a 9-hour shift. Figures compare two plans for
-          the same orders and are not customer results.
+          its street graph; vans average {scenario ? Math.round(scenario.fleet.speedMps * 3.6) : 18} km/h with{' '}
+          {scenario ? scenario.fleet.serviceSec / 60 : 6} minutes per stop, {scenario?.fleet.capacity ?? 90}{' '}
+          {PROFILE_UNIT[settingsProfile][1]} and a {scenario ? scenario.fleet.shiftSec / 3600 : 9}-hour shift. Figures compare two plans
+          for the same orders and are not customer results.
         </figcaption>
       </figure>
       <p className="sr-only" aria-live="polite">

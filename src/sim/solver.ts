@@ -116,6 +116,17 @@ export function evaluate(p: Problem, plan: Plan): PlanStats {
   };
 }
 
+/**
+ * Like evaluate(), but keeps one entry per van (empty routes included) so van numbering stays
+ * stable while a dispatcher edits the live plan. `vans` counts only vans with stops.
+ */
+export function evaluateAligned(p: Problem, plan: Plan): PlanStats {
+  const compact = evaluate(p, plan.filter((r) => r.length > 0));
+  let k = 0;
+  const routes = plan.map((r) => (r.length ? compact.routes[k++] : { distance: 0, load: 0, duration: 0, stops: 0 }));
+  return { ...compact, routes };
+}
+
 export function objective(p: Problem, plan: Plan): number {
   let o = 0;
   for (const r of plan) if (r.length) o += routeDistance(p, r) + VAN_COST;
@@ -234,14 +245,15 @@ export function savingsPlan(p: Problem, lambda: number): Plan {
 
 // ─── Local search ────────────────────────────────────────────────────────────
 
-function twoOptRoute(p: Problem, r: number[]): number {
+/** 2-opt within one route. The first `frozen` stops (already delivered) are never reordered. */
+export function twoOptRoute(p: Problem, r: number[], frozen = 0): number {
   const seq = [0, ...r, 0];
   const L = seq.length;
   let moves = 0;
   let improved = true;
   while (improved) {
     improved = false;
-    for (let i = 0; i < L - 3; i++) {
+    for (let i = frozen; i < L - 3; i++) {
       const a = seq[i];
       const b = seq[i + 1];
       const dab = p.D[idx(p, a, b)];

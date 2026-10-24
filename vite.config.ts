@@ -33,10 +33,7 @@ export default defineConfig({
   build: {
     target: 'es2022',
     rollupOptions: {
-      input: {
-        main: resolve(import.meta.dirname, 'index.html'),
-        caseStudy: resolve(import.meta.dirname, 'case-study.html'),
-      },
+      input: { main: resolve(import.meta.dirname, 'index.html') },
       output: {
         manualChunks: (id) => (/node_modules\/(react|react-dom|scheduler)\//.test(id) ? 'react' : undefined),
       },
