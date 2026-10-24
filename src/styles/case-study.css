@@ -1,0 +1,189 @@
+.cs {
+  padding-bottom: 64px;
+}
+
+.cs__head {
+  padding-top: clamp(40px, 7vw, 96px);
+  padding-bottom: clamp(32px, 5vw, 64px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.cs h1 {
+  margin-top: 14px;
+  max-width: 16ch;
+  font-size: clamp(2.4rem, 1.2rem + 3.6vw, 4.6rem);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.cs__lede {
+  margin-top: 20px;
+  max-width: 56ch;
+  font-size: clamp(1.05rem, 0.98rem + 0.35vw, 1.25rem);
+  color: var(--ink-2);
+}
+
+.cs__links {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cs__facts {
+  margin: 40px 0 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.cs__facts div {
+  border-top: 2px solid var(--ink);
+  padding-top: 10px;
+}
+
+.cs__facts dd {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+}
+
+.cs__section {
+  padding-top: clamp(48px, 7vw, 96px);
+}
+
+.cs h2 {
+  font-size: clamp(1.7rem, 1.1rem + 1.8vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.cs__decisions {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: d;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 32px;
+}
+
+.cs__decisions li {
+  counter-increment: d;
+  border-top: 1px solid var(--rule-strong);
+  padding-top: 14px;
+}
+
+.cs__decisions li::before {
+  content: counter(d, decimal-leading-zero);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--amber-deep);
+}
+
+.cs__decisions h3 {
+  margin-top: 6px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.cs__decisions p {
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 0.96rem;
+}
+
+.cs__note {
+  margin-top: 12px;
+  max-width: 70ch;
+  color: var(--ink-2);
+  font-size: 0.92rem;
+}
+
+.cs__metrics {
+  margin: 28px 0 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+.cs__metrics > div {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  padding: 18px;
+}
+
+.cs__metrics dd {
+  margin: 0;
+}
+
+.cs__metrics .mono {
+  order: -1;
+  font-size: clamp(1.8rem, 1.3rem + 1.4vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.cs__metrics dt {
+  margin-top: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.cs__metric-note {
+  margin-top: 4px !important;
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+
+.cs__split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.cs__split ul,
+.cs__reuse {
+  margin: 16px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.cs__reuse {
+  max-width: 70ch;
+}
+
+.cs__foot {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+
+@media (max-width: 960px) {
+  .cs__facts,
+  .cs__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cs__decisions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .cs__facts,
+  .cs__split {
+    grid-template-columns: 1fr;
+  }
+}

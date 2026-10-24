@@ -1,0 +1,7 @@
+*.log
+.a11y.*
+.bench.json
+.lh
+.shots
+dist
+node_modules
