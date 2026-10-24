@@ -5,6 +5,7 @@ import { Wordmark } from './SiteHeader';
 import { Icon } from './icons';
 import { clock, pause, play, setSimTime, setSpeed, useSim } from '../sim/store';
 import { PROFILE_UNIT } from '../sim/scenario';
+import { useEnsurePlan } from '../app/common';
 
 const NAV = [
   { to: '/app', label: 'Control tower', icon: 'tower' },
@@ -95,6 +96,8 @@ function LiveBadge() {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  // every console page works on a planned day (and this restores a saved session)
+  useEnsurePlan();
   const loc = useLocation();
   const route = findRoute(loc.path);
   const title = route.title.replace(/ — Firstlight$/, '');

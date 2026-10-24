@@ -48,15 +48,15 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
       case 'disrupt':
         return done(disrupt(c, msg.scenario, msg.planned, msg.closedEdge));
       case 'evaluate':
-        return done(viewOf(c, msg.scenario, tc, msg.routes));
+        return done(viewOf(c, msg.scenario, tc, msg.routes, undefined, msg.starts));
       case 'insertOptions':
         return done(insertionOptions(msg.scenario, tc, msg.routes, msg.order, msg.frozen));
       case 'move': {
         const move = moveOrder(msg.scenario, tc, msg.routes, msg.order, msg.toVan, msg.frozen);
-        return done({ move, view: viewOf(c, msg.scenario, tc, move.routes) });
+        return done({ move, view: viewOf(c, msg.scenario, tc, move.routes, undefined, msg.starts) });
       }
       case 'breakdown':
-        return done(breakdown(c, msg.scenario, tc, msg.routes, msg.van, msg.frozen));
+        return done(breakdown(c, msg.scenario, tc, msg.routes, msg.van, msg.frozen, msg.nowSec, msg.starts));
     }
   } catch (err) {
     post({ type: 'error', id: msg.id, message: err instanceof Error ? err.message : String(err) });

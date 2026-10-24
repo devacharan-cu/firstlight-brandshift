@@ -89,23 +89,25 @@ export function StatePill({ state }: { state: VanState }) {
 
 /** Events derived from the schedule up to the simulated time, merged with what people did. */
 export function dayEvents(view: PlanView, scenario: Scenario, t: number, delivered: Record<number, number>, log: LogEntry[]) {
-  const out: { at: number; kind: string; text: string; van?: number }[] = [];
+  const out: { at: number; kind: string; text: string; van?: number; seq: number }[] = [];
+  let seq = 0;
   const sched = scheduleOf(view, scenario);
   for (const s of sched) {
     if (!s.stops.length) continue;
-    if (t >= s.start) out.push({ at: s.start, kind: 'depart', text: `Van ${pad(s.van + 1)} left the depot with ${s.stops.length} drops`, van: s.van });
+    if (t >= s.start) out.push({ seq: seq++, at: s.start, kind: 'depart', text: `Van ${pad(s.van + 1)} left the depot with ${s.stops.length} drops`, van: s.van });
     for (const st of s.stops) {
       if (delivered[st.order] !== undefined) continue;
-      if (t >= st.depart) out.push({ at: st.depart, kind: 'drop', text: `${scenario.orders[st.order].id} delivered · ${scenario.orders[st.order].name}`, van: s.van });
+      if (t >= st.depart) out.push({ seq: seq++, at: st.depart, kind: 'drop', text: `${scenario.orders[st.order].id} delivered · ${scenario.orders[st.order].name}`, van: s.van });
     }
-    if (t >= s.end) out.push({ at: s.end, kind: 'return', text: `Van ${pad(s.van + 1)} back at the depot`, van: s.van });
+    if (t >= s.end) out.push({ seq: seq++, at: s.end, kind: 'return', text: `Van ${pad(s.van + 1)} back at the depot`, van: s.van });
   }
   for (const [o, at] of Object.entries(delivered)) {
     const order = scenario.orders[+o];
-    if (order) out.push({ at, kind: 'pod', text: `${order.id} confirmed in the driver app` });
+    if (order) out.push({ seq: seq++, at, kind: 'pod', text: `${order.id} confirmed in the driver app` });
   }
-  for (const e of log) out.push({ at: e.at, kind: e.kind, text: e.text });
-  return out.filter((e) => e.at <= t + 1).sort((a, b) => b.at - a.at);
+  for (const e of log) out.push({ seq: seq++, at: e.at, kind: e.kind, text: e.text });
+  // newest first; within the same minute, the most recent action first
+  return out.filter((e) => e.at <= t + 1).sort((a, b) => b.at - a.at || b.seq - a.seq);
 }
 
 export function Planning({ children }: { children?: ReactNode }) {

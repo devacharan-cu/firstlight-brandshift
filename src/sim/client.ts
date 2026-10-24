@@ -56,17 +56,17 @@ class RoutingClient {
   disrupt(scenario: Scenario, planned: PlanView, closedEdge: number) {
     return this.send({ type: 'disrupt', scenario, planned, closedEdge });
   }
-  evaluate(scenario: Scenario, routes: number[][]) {
-    return this.send({ type: 'evaluate', scenario, routes });
+  evaluate(scenario: Scenario, routes: number[][], starts?: number[]) {
+    return this.send({ type: 'evaluate', scenario, routes, starts });
   }
   insertOptions(scenario: Scenario, routes: number[][], order: number, frozen: number[]) {
     return this.send({ type: 'insertOptions', scenario, routes, order, frozen });
   }
-  move(scenario: Scenario, routes: number[][], order: number, toVan: number, frozen: number[]) {
-    return this.send({ type: 'move', scenario, routes, order, toVan, frozen });
+  move(scenario: Scenario, routes: number[][], order: number, toVan: number, frozen: number[], starts?: number[]) {
+    return this.send({ type: 'move', scenario, routes, order, toVan, frozen, starts });
   }
-  breakdown(scenario: Scenario, routes: number[][], van: number, frozen: number[]) {
-    return this.send({ type: 'breakdown', scenario, routes, van, frozen });
+  breakdown(scenario: Scenario, routes: number[][], van: number, frozen: number[], nowSec: number, starts?: number[]) {
+    return this.send({ type: 'breakdown', scenario, routes, van, frozen, nowSec, starts });
   }
 }
 

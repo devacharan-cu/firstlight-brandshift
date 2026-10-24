@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { drawBase, fitBox, fitTransform, ink, pointAt, routeColor, screenRoute, sx, sy, type ScreenRoute, type Transform } from '../map/draw';
 import { getCity, getState, metresAt, scheduleOf, subscribe, type VanSchedule } from '../sim/store';
+import { nearestNode } from '../sim/city';
 import { currentPaper } from '../lib/daylight';
 import type { PlanView } from '../sim/plan';
 import type { Scenario } from '../sim/scenario';
+
+const NO_MARKS: number[] = [];
 
 interface Props {
   view: PlanView;
@@ -17,13 +20,17 @@ interface Props {
   className?: string;
   /** draw vans at the simulated time */
   vans?: boolean;
+  /** when set, a click picks the nearest street junction instead of a route */
+  onPick?: (node: number) => void;
+  /** extra highlighted nodes (e.g. a new order waiting for a van) */
+  marks?: number[];
 }
 
 /**
  * The live fleet map: routes, stops by status and vans at the simulated time.
  * Vans redraw on clock ticks straight from the store, without React renders.
  */
-export function LiveMap({ view, scenario, highlight = -1, focusVan, onSelectVan, label, className = '', vans = true }: Props) {
+export function LiveMap({ view, scenario, highlight = -1, focusVan, onSelectVan, label, className = '', vans = true, onPick, marks = NO_MARKS }: Props) {
   const city = getCity();
   const wrap = useRef<HTMLDivElement>(null);
   const base = useRef<HTMLCanvasElement>(null);
@@ -139,6 +146,22 @@ export function LiveMap({ view, scenario, highlight = -1, focusVan, onSelectVan,
       ctx.fillRect(dx - 7, dy - 7, 14, 14);
       ctx.fillStyle = '#f2a93b';
       ctx.fillRect(dx - 3.5, dy - 3.5, 7, 7);
+      // marks: orders waiting for a van
+      for (const node of marks) {
+        const mx = sx(t, city.x[node]);
+        const my = sy(t, city.y[node]);
+        ctx.beginPath();
+        ctx.arc(mx, my, 9, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(242, 169, 59, 0.35)';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#b45f00';
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(mx, my, 3.2, 0, Math.PI * 2);
+        ctx.fillStyle = '#17140f';
+        ctx.fill();
+      }
       // vans
       if (vans) {
         data.sched.forEach((sch, k) => {
@@ -175,13 +198,18 @@ export function LiveMap({ view, scenario, highlight = -1, focusVan, onSelectVan,
       unsub();
       cancelAnimationFrame(raf);
     };
-  }, [t, data, view, scenario, highlight, vans, city]);
+  }, [t, data, view, scenario, highlight, vans, city, marks]);
 
   const onClick = (e: React.MouseEvent) => {
-    if (!onSelectVan || !t || !data) return;
+    if (!t || !data) return;
     const rect = wrap.current!.getBoundingClientRect();
     const px = e.clientX - rect.left;
     const py = e.clientY - rect.top;
+    if (onPick) {
+      onPick(nearestNode(city, (px - t.ox) / t.scale, (py - t.oy) / t.scale));
+      return;
+    }
+    if (!onSelectVan) return;
     // nearest route within 10px
     let best = -1;
     let bd = 12 * 12;
@@ -198,7 +226,7 @@ export function LiveMap({ view, scenario, highlight = -1, focusVan, onSelectVan,
   };
 
   return (
-    <div ref={wrap} className={`livemap ${className}`} onClick={onClick}>
+    <div ref={wrap} className={`livemap ${onPick ? 'is-picking' : ''} ${className}`} onClick={onClick}>
       <canvas ref={base} aria-hidden />
       <canvas ref={top} role="img" aria-label={label} />
     </div>

@@ -17,10 +17,10 @@ export type WorkerRequest =
   | { type: 'baseline'; id: number; scenario: Scenario }
   | { type: 'plan'; id: number; scenario: Scenario }
   | { type: 'disrupt'; id: number; scenario: Scenario; planned: PlanView; closedEdge: number }
-  | { type: 'evaluate'; id: number; scenario: Scenario; routes: number[][] }
+  | { type: 'evaluate'; id: number; scenario: Scenario; routes: number[][]; starts?: number[] }
   | { type: 'insertOptions'; id: number; scenario: Scenario; routes: number[][]; order: number; frozen: number[] }
-  | { type: 'move'; id: number; scenario: Scenario; routes: number[][]; order: number; toVan: number; frozen: number[] }
-  | { type: 'breakdown'; id: number; scenario: Scenario; routes: number[][]; van: number; frozen: number[] };
+  | { type: 'move'; id: number; scenario: Scenario; routes: number[][]; order: number; toVan: number; frozen: number[]; starts?: number[] }
+  | { type: 'breakdown'; id: number; scenario: Scenario; routes: number[][]; van: number; frozen: number[]; nowSec: number; starts?: number[] };
 
 export interface MoveResponse {
   move: MoveResult;

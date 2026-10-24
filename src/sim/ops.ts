@@ -17,13 +17,14 @@ import { durationOf, evaluateAligned, routeDistance, routeLoad, twoOptRoute, typ
 const toPlan = (routes: number[][]): Plan => routes.map((r) => r.map((o) => o + 1));
 const fz = (frozen: number[] | undefined, v: number) => frozen?.[v] ?? 0;
 
-export function viewOf(city: City, scenario: Scenario, cache: TreeCache, routes: number[][], problem?: Problem): PlanView {
+export function viewOf(city: City, scenario: Scenario, cache: TreeCache, routes: number[][], problem?: Problem, starts?: number[]): PlanView {
   const p = problem ?? buildProblem(scenario, cache).problem;
   const depot = scenario.depotNode;
   return {
     routes: routes.map((r) => r.slice()),
     stats: evaluateAligned(p, toPlan(routes)),
     geometry: routes.map((r) => geometryFor(city, cache, [depot, ...r.map((o) => scenario.orders[o].node), depot])),
+    ...(starts ? { starts: routes.map((_, v) => starts[v] ?? scenario.fleet.shiftStartSec) } : {}),
   };
 }
 
@@ -127,14 +128,28 @@ export interface BreakdownResult {
    * change in total fleet distance; it can be negative because the broken van stops driving.
    */
   redistribute: { routes: number[][]; view: PlanView; unserved: number[]; touched: number[]; fleetDeltaMetres: number; moved: number };
-  /** a spare van takes the broken van's open stops, leaving `delayMin` later */
-  spare: { available: boolean; delayMin: number; endSec: number; overtime: boolean };
+  /** a spare van takes all of the broken van's open stops, leaving the depot `delayMin` from now */
+  spare: SpareOption;
+  /** what a dispatcher would usually do: running vans take what fits, a spare van takes the rest */
+  hybrid: (SpareOption & { routes: number[][]; view: PlanView; spareVan: number }) | null;
   ms: number;
 }
 
+export interface SpareOption {
+  available: boolean;
+  delayMin: number;
+  stops: number;
+  /** departure and return, seconds after midnight */
+  startSec: number;
+  endSec: number;
+  /** the spare driver works a normal shift from their own departure */
+  overtime: boolean;
+}
+
 /**
- * A van goes off the road. Two honest options are compared: redistribute its open stops onto
- * the vans that are running, or send a spare van later with the same route.
+ * A van goes off the road at `nowSec` (seconds after midnight). Three honest options:
+ * redistribute its open stops onto running vans, send a spare van later with all of them,
+ * or both: running vans take what fits and a spare van takes the rest.
  */
 export function breakdown(
   city: City,
@@ -143,6 +158,8 @@ export function breakdown(
   routes: number[][],
   van: number,
   frozen?: number[],
+  nowSec = scenario.fleet.shiftStartSec,
+  starts?: number[],
   spareDelayMin = 45,
 ): BreakdownResult {
   const t0 = performance.now();
@@ -151,7 +168,7 @@ export function breakdown(
   const keep = fz(frozen, van);
   const orphans = plan[van].slice(keep).sort((a, b) => p.demand[b] - p.demand[a] || a - b);
   const before = plan.reduce((s, r) => s + routeDistance(p, r), 0);
-  const originalOpen = plan[van].slice();
+  const originalOpen = plan[van].slice(keep);
   plan[van] = plan[van].slice(0, keep);
   const unserved: number[] = [];
   const touched = new Set<number>();
@@ -177,18 +194,48 @@ export function breakdown(
   const next = plan.map((r) => r.map((c) => c - 1));
 
   const used = routes.filter((r) => r.length > 0).length;
-  const endSec = durationOf(p, routeDistance(p, originalOpen), originalOpen.length) + spareDelayMin * 60;
+  const available = used < p.fleet;
+  const startSec = Math.max(scenario.fleet.shiftStartSec, nowSec) + spareDelayMin * 60;
+  const spareFor = (stops: number[]): SpareOption => {
+    const r = stops.slice();
+    twoOptRoute(p, r);
+    const endSec = startSec + durationOf(p, routeDistance(p, r), r.length);
+    return { available, delayMin: spareDelayMin, stops: r.length, startSec, endSec, overtime: endSec - startSec > p.shift };
+  };
+
+  let hybrid: BreakdownResult['hybrid'] = null;
+  if (unserved.length && available) {
+    const spareRoute = unserved.map((o) => o + 1);
+    twoOptRoute(p, spareRoute);
+    // the spare takes the first van number not used today
+    let spareVan = routes.findIndex((r, k) => r.length === 0 && k !== van);
+    const hybridRoutes = next.map((r) => r.slice());
+    if (spareVan < 0) {
+      spareVan = hybridRoutes.length;
+      hybridRoutes.push([]);
+    }
+    hybridRoutes[spareVan] = spareRoute.map((c) => c - 1);
+    const hybridStarts = hybridRoutes.map((_, k) => (k === spareVan ? startSec : (starts?.[k] ?? scenario.fleet.shiftStartSec)));
+    hybrid = {
+      ...spareFor(spareRoute),
+      routes: hybridRoutes,
+      view: viewOf(city, scenario, cache, hybridRoutes, p, hybridStarts),
+      spareVan,
+    };
+  }
+
   return {
     van,
     redistribute: {
       routes: next,
-      view: viewOf(city, scenario, cache, next, p),
+      view: viewOf(city, scenario, cache, next, p, starts),
       unserved,
       touched: [...touched].sort((a, b) => a - b),
       fleetDeltaMetres: after - before,
       moved: orphans.length - unserved.length,
     },
-    spare: { available: used < p.fleet, delayMin: spareDelayMin, endSec, overtime: endSec > p.shift },
+    spare: spareFor(originalOpen),
+    hybrid,
     ms: performance.now() - t0,
   };
 }

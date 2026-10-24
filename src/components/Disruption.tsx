@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Chapter } from './Chapter';
 import { MiniMap, type MapLayer, type MapMarker } from './MiniMap';
 import { clearDisruption, getCity, requestDisruption, requestPlan, useSim } from '../sim/store';
@@ -8,7 +8,21 @@ import type { PlanStats } from '../sim/solver';
 
 const signedKm = (m: number) => `${m >= 0 ? '+' : '−'}${fmtKm(Math.abs(m))}`;
 
-export function Disruption() {
+function Wrap({ bare, children }: { bare: boolean; children: ReactNode }) {
+  if (bare) return <>{children}</>;
+  return (
+    <Chapter clock="07:30" note="Disruption" title="The bridge closes. The plan doesn’t fall over.">
+      <p className="chapter__lede">
+        Half an hour before the vans leave, a bridge is shut for repairs, and every route that crossed it is now wrong. Pick a
+        crossing and close it. Firstlight re-plans only the vans that need it, on the streets that are still open.
+      </p>
+      {children}
+    </Chapter>
+  );
+}
+
+/** Bridge-closure what-if. On the home page it is a chapter; in the console it renders bare. */
+export function Disruption({ bare = false }: { bare?: boolean }) {
   const city = getCity();
   const scenario = useSim((s) => s.scenario);
   const plan = useSim((s) => s.plan);
@@ -67,12 +81,7 @@ export function Disruption() {
     : [];
 
   return (
-    <Chapter clock="07:30" note="Disruption" title="The bridge closes. The plan doesn’t fall over.">
-      <p className="chapter__lede">
-        Half an hour before the vans leave, a bridge is shut for repairs, and every route that crossed it is now wrong. Pick a
-        crossing and close it. Firstlight re-plans only the vans that need it, on the streets that are still open.
-      </p>
-
+    <Wrap bare={bare}>
       <div className="disrupt" ref={ref}>
         <div className="disrupt__controls">
           <p className="label">Kesar River crossings</p>
@@ -194,6 +203,6 @@ export function Disruption() {
           </figcaption>
         </figure>
       </div>
-    </Chapter>
+    </Wrap>
   );
 }

@@ -27,6 +27,8 @@ export interface PlanView {
   routes: number[][];
   stats: PlanStats;
   geometry: RouteGeometry[];
+  /** Optional per-van departure (seconds after midnight); vans default to the shift start. */
+  starts?: number[];
 }
 
 export interface PlanningResult {

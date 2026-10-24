@@ -124,8 +124,10 @@ export function Link({
     }
   };
   const loc = useLocation();
-  const target = normalise(new URL(to, 'http://x' + loc.path).pathname);
-  const isCurrent = target === loc.path && !to.includes('#');
+  const u = new URL(to, 'http://x' + loc.path);
+  const target = normalise(u.pathname);
+  // links with a query (e.g. ?van=3) are current only when the query matches too
+  const isCurrent = target === loc.path && !to.includes('#') && (!u.search || u.searchParams.toString() === loc.search.toString());
   return (
     <a href={to} onClick={handle} onMouseEnter={warm} onFocus={warm} aria-current={isCurrent ? 'page' : undefined} {...rest}>
       {children}

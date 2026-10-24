@@ -73,13 +73,14 @@ export function PlanTable({ views = ['baseline', 'optimized'], initial = 'optimi
           {view.routes.map((r, k) => {
             const s = view.stats.routes[k];
             if (!r.length || !s) return null;
-            const etas = etasFor(view.geometry[k], scenario);
+            const start = ('starts' in view ? view.starts?.[k] : undefined) ?? scenario.fleet.shiftStartSec;
+            const etas = etasFor(view.geometry[k], scenario, start);
             const pct = Math.min(100, (s.load / scenario.fleet.capacity) * 100);
             return (
               <details key={k} className="dsheet__van">
                 <summary
                   className="dsheet__row"
-                  aria-label={`Van ${k + 1}: ${s.stops} stops, ${s.load} of ${scenario.fleet.capacity} ${units}, ${fmtKm(s.distance)} kilometres, ${fmtH(s.duration)} hours, back at depot ${clock(scenario.fleet.shiftStartSec + s.duration)}`}
+                  aria-label={`Van ${k + 1}: ${s.stops} stops, ${s.load} of ${scenario.fleet.capacity} ${units}, ${fmtKm(s.distance)} kilometres, ${fmtH(s.duration)} hours, back at depot ${clock(start + s.duration)}`}
                 >
                   <span className="dsheet__van-id">
                     <i className="swatch" style={{ background: coloured ? routeColor(k) : 'var(--ink)' }} aria-hidden />
@@ -96,7 +97,7 @@ export function PlanTable({ views = ['baseline', 'optimized'], initial = 'optimi
                   </span>
                   <span className="mono">{fmtKm(s.distance)} km</span>
                   <span className="mono">{fmtH(s.duration)} h</span>
-                  <span className={`mono ${s.duration > scenario.fleet.shiftSec ? 'warn' : ''}`}>{clock(scenario.fleet.shiftStartSec + s.duration)}</span>
+                  <span className={`mono ${s.duration > scenario.fleet.shiftSec ? 'warn' : ''}`}>{clock(start + s.duration)}</span>
                 </summary>
                 <ol className="dsheet__stops">
                   {r.map((o, j) => {

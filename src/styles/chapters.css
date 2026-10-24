@@ -457,7 +457,8 @@ input[type='range'] {
   border-radius: 2px;
 }
 
-.vanpick__btn[aria-pressed='true'] {
+.vanpick__btn[aria-pressed='true'],
+.vanpick__btn[aria-current='page'] {
   background: var(--ink);
   color: #f3ecdf;
 }

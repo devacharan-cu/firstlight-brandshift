@@ -7,9 +7,12 @@ import type { PlanStats } from '../sim/solver';
 const DRIVE = '#6250d6';
 const SERVICE = '#12936a';
 
-function LoadBars({ title, stats, capacity, color }: { title: string; stats: PlanStats; capacity: number; color: string }) {
+export function LoadBars({ title, stats, capacity, color }: { title: string; stats: PlanStats; capacity: number; color: string }) {
   const [tip, setTip] = useState<number | null>(null);
-  const rows = stats.routes.map((r, k) => ({ k, load: r.load, pct: (r.load / capacity) * 100 })).sort((a, b) => b.pct - a.pct);
+  const rows = stats.routes
+    .map((r, k) => ({ k, load: r.load, stops: r.stops, pct: (r.load / capacity) * 100 }))
+    .filter((r) => r.stops > 0)
+    .sort((a, b) => b.pct - a.pct);
   const barH = 10;
   const gap = 6;
   const h = rows.length * (barH + gap);
@@ -50,7 +53,7 @@ function LoadBars({ title, stats, capacity, color }: { title: string; stats: Pla
   );
 }
 
-function TimeSplit({ base, opt, service, stops }: { base: PlanStats; opt: PlanStats; service: number; stops: number }) {
+export function TimeSplit({ base, opt, service, stops }: { base: PlanStats; opt: PlanStats; service: number; stops: number }) {
   const [tip, setTip] = useState<string | null>(null);
   const rows = [
     { name: 'Manual plan', drive: base.duration - service * stops, service: service * stops },

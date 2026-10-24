@@ -156,3 +156,24 @@ describe('edits after the day has started', () => {
     for (const k of b.redistribute.touched) expect(b.redistribute.routes[k].slice(0, 5)).toEqual(live[k].slice(0, 5));
   });
 });
+
+describe('breakdown options', () => {
+  it('times a spare van from now, not from the start of the shift', () => {
+    const now = 10 * 3600;
+    const b = breakdown(city, scenario, cache, live, 0, live.map(() => 0), now);
+    expect(b.spare.startSec).toBe(now + 45 * 60);
+    expect(b.spare.endSec).toBeGreaterThan(b.spare.startSec);
+  });
+
+  it('the hybrid keeps every order exactly once and gives the spare its own departure', () => {
+    // make vans nearly full by using a tight capacity scenario so that something is left over
+    const sc = { ...scenario, fleet: { ...scenario.fleet, capacity: 40 } };
+    const r = planScenario(city, sc, cache).optimized.routes;
+    const b = breakdown(city, sc, cache, r, 0, r.map(() => 0), sc.fleet.shiftStartSec);
+    if (!b.hybrid) return; // everything fitted: nothing to check
+    const seen = new Array(sc.orders.length).fill(0);
+    b.hybrid.routes.flat().forEach((o) => seen[o]++);
+    expect(seen.every((c) => c === 1)).toBe(true);
+    expect(b.hybrid.view.starts?.[b.hybrid.spareVan]).toBe(b.hybrid.startSec);
+  });
+});

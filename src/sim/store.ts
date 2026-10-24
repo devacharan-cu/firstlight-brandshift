@@ -120,6 +120,7 @@ interface Saved {
   scenario: Scenario;
   urgentCount: number;
   liveRoutes: number[][] | null;
+  liveStarts?: number[];
   edits: number;
   dispatched: number;
   delivered: Record<number, number>;
@@ -136,6 +137,7 @@ function schedulePersist() {
       scenario: state.scenario!,
       urgentCount: state.urgentCount,
       liveRoutes: state.live?.routes ?? null,
+      liveStarts: state.live?.starts,
       edits: state.edits,
       dispatched: state.dispatched,
       delivered: state.delivered,
@@ -217,6 +219,7 @@ export function initSimulation(compact: boolean) {
       log: saved.log.filter((e) => e.kind !== 'plan'),
     });
     pendingLive = saved.liveRoutes;
+    restoredStarts = saved.liveStarts;
     restoredEdits = saved.edits ?? 0;
     restoredDelivered = saved.delivered;
     restoredExtra = saved.dispatched ? saved.scenario.orders.slice(planned) : null;
@@ -227,6 +230,7 @@ export function initSimulation(compact: boolean) {
 }
 let restoredExtra: Scenario['orders'] | null = null;
 let restoredEdits = 0;
+let restoredStarts: number[] | undefined;
 
 export function applySettings(settings: Settings, label = 'Scenario settings changed') {
   setScenario(scenarioFrom(getCity(), settings, state.scenario?.depotNode), {
@@ -307,7 +311,7 @@ function restoreSession() {
   if (routes && valid) {
     const v = state.version;
     routing
-      .evaluate(state.scenario!, routes)
+      .evaluate(state.scenario!, routes, restoredStarts)
       .then((view) => {
         if (state.version === v) set({ live: view, delivered: delivered ?? {}, edits: restoredEdits });
       })
@@ -348,7 +352,7 @@ async function replaceLive(routes: number[][], text: string, kind: LogEntry['kin
   const v = state.version;
   set({ liveBusy: true });
   try {
-    const view = await routing.evaluate(state.scenario!, routes);
+    const view = await routing.evaluate(state.scenario!, routes, state.live?.starts);
     if (state.version === v) set({ live: view, liveBusy: false, edits: state.edits + 1, log: log(kind, text) });
     return view;
   } catch (e) {
@@ -364,7 +368,7 @@ export async function moveStop(order: number, toVan: number): Promise<number> {
   const v = state.version;
   set({ liveBusy: true });
   try {
-    const { move, view } = await routing.move(state.scenario, live.routes, order, toVan, frozenCounts());
+    const { move, view } = await routing.move(state.scenario, live.routes, order, toVan, frozenCounts(), live.starts);
     if (state.version !== v) return 0;
     const o = state.scenario.orders[order];
     const km = (Math.abs(move.deltaMetres) / 1000).toFixed(1);
@@ -497,21 +501,28 @@ export async function requestBreakdown(van: number) {
   const v = state.version;
   set({ breakdownStatus: 'solving' });
   try {
-    const b = await routing.breakdown(state.scenario, live.routes, van, frozenCounts());
+    const b = await routing.breakdown(state.scenario, live.routes, van, frozenCounts(), state.sim.sec, live.starts);
     if (state.version === v) set({ breakdown: b, breakdownStatus: 'ready' });
   } catch (e) {
     if (state.version === v) set({ breakdownStatus: 'error', error: (e as Error).message });
   }
 }
-export function applyBreakdown() {
+export function applyBreakdown(kind: 'redistribute' | 'hybrid' = 'redistribute') {
   const b = state.breakdown;
   if (!b) return;
+  const hybrid = kind === 'hybrid' ? b.hybrid : null;
+  if (kind === 'hybrid' && !hybrid) return;
   set({
-    live: b.redistribute.view,
+    live: hybrid ? hybrid.view : b.redistribute.view,
     edits: state.edits + 1,
     breakdown: null,
     breakdownStatus: 'idle',
-    log: log('disruption', `Van ${pad(b.van + 1)} off the road: ${b.redistribute.touched.length} vans took its stops`),
+    log: log(
+      'disruption',
+      hybrid
+        ? `Van ${pad(b.van + 1)} off the road: ${b.redistribute.touched.length} vans took ${b.redistribute.moved} drops, spare Van ${pad(hybrid.spareVan + 1)} leaves ${clock(hybrid.startSec)} with ${hybrid.stops}`
+        : `Van ${pad(b.van + 1)} off the road: ${b.redistribute.touched.length} vans took its stops`,
+    ),
   });
 }
 export function clearBreakdown() {
@@ -538,10 +549,10 @@ export function clock(sec: number): string {
   return `${pad(h)}:${pad(m)}`;
 }
 
-/** Arrival times (s after midnight) for any route geometry. */
-export function etasFor(g: RouteGeometry, scenario: Scenario): number[] {
+/** Arrival times (s after midnight) for any route geometry, leaving the depot at `start`. */
+export function etasFor(g: RouteGeometry, scenario: Scenario, start = scenario.fleet.shiftStartSec): number[] {
   const f = scenario.fleet;
-  return Array.from(g.stopAt, (pathIdx, k) => f.shiftStartSec + g.cum[pathIdx] / f.speedMps + k * f.serviceSec);
+  return Array.from(g.stopAt, (pathIdx, k) => start + g.cum[pathIdx] / f.speedMps + k * f.serviceSec);
 }
 
 /** Arrival time (s after midnight) of each stop on an optimised route. */
@@ -566,13 +577,14 @@ export function scheduleOf(view: PlanView, scenario: Scenario): VanSchedule[] {
   const f = scenario.fleet;
   return view.routes.map((r, van) => {
     const g = view.geometry[van];
-    const etas = r.length ? etasFor(g, scenario) : [];
+    const start = view.starts?.[van] ?? f.shiftStartSec;
+    const etas = r.length ? etasFor(g, scenario, start) : [];
     const metres = g.cum[g.cum.length - 1] ?? 0;
     return {
       van,
       stops: r.map((order, k) => ({ order, arrive: etas[k], depart: etas[k] + f.serviceSec })),
-      start: f.shiftStartSec,
-      end: r.length ? f.shiftStartSec + metres / f.speedMps + r.length * f.serviceSec : f.shiftStartSec,
+      start,
+      end: r.length ? start + metres / f.speedMps + r.length * f.serviceSec : start,
       metres,
     };
   });
