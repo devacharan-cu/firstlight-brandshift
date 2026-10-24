@@ -1,0 +1,250 @@
+{
+  "_about": "Every photograph, clip and panorama used on the site. All are real-world captures by the credited photographers, used illustratively: none depicts Firstlight, Kesarnagar or any customer. Licences were read on the source pages on 24 Oct 2026. Raw sources live in assets-src/ (not committed); run `npm run media` to rebuild public/media/.",
+  "licences": {
+    "unsplash": {
+      "name": "Unsplash License",
+      "url": "https://unsplash.com/license",
+      "summary": "Free for commercial use, no attribution required; may not be sold unaltered or used to build a competing image service."
+    },
+    "pexels": {
+      "name": "Pexels License",
+      "url": "https://www.pexels.com/license/",
+      "summary": "Free for commercial use, no attribution required, editing allowed; identifiable people may not be shown in a bad light or as endorsing a product; may not be sold unaltered."
+    },
+    "cc0": {
+      "name": "CC0 (Poly Haven)",
+      "url": "https://polyhaven.com/license",
+      "summary": "Public domain dedication; any use, no attribution required."
+    }
+  },
+  "photos": [
+    {
+      "id": "dock-door",
+      "src": "assets-src/photo/px-29786116.jpg",
+      "alt": "Looking out from a dim loading bay through an open roller door at a white box truck in daylight.",
+      "credit": "Juan R. Real",
+      "page": "https://www.pexels.com/photo/warehouse-with-delivery-truck-exiting-the-loading-dock-29786116/",
+      "download": "https://images.pexels.com/photos/29786116/pexels-photo-29786116.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "60% 50%",
+      "notes": "No people. A phone number and fleet ID on the truck are blurred (redact regions, source pixels).",
+      "redact": [
+        [
+          1092,
+          486,
+          136,
+          70
+        ],
+        [
+          938,
+          676,
+          110,
+          44
+        ]
+      ]
+    },
+    {
+      "id": "dawn-street",
+      "src": "assets-src/photo/px-36684482.jpg",
+      "alt": "Silhouetted figures playing cricket on a tree-lined street in low dawn light.",
+      "credit": "Jayesh Jagtap",
+      "page": "https://www.pexels.com/photo/morning-cricket-game-in-mumbai-street-36684482/",
+      "download": "https://images.pexels.com/photos/36684482/pexels-photo-36684482.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "55% 60%",
+      "notes": "Figures are silhouettes; no identifiable faces. Source page names Mumbai; the site does not claim a location."
+    },
+    {
+      "id": "city-haze",
+      "src": "assets-src/photo/px-16776148.jpg",
+      "alt": "A wide city skyline under morning haze, low-rise housing in the foreground and towers on the horizon.",
+      "credit": "Jayesh Jagtap",
+      "page": "https://www.pexels.com/photo/city-in-smog-16776148/",
+      "download": "https://images.pexels.com/photos/16776148/pexels-photo-16776148.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "50% 45%",
+      "notes": "No people or signage legible."
+    },
+    {
+      "id": "van-interior",
+      "src": "assets-src/photo/px-5025659.jpg",
+      "alt": "Inside a van loaded with cardboard boxes; the open rear doors frame a suburban road at sunset.",
+      "credit": "Artem Podrez",
+      "page": "https://www.pexels.com/photo/brown-cardboard-boxes-inside-a-van-5025659/",
+      "download": "https://images.pexels.com/photos/5025659/pexels-photo-5025659.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "50% 55%",
+      "notes": "No people. Boxes unmarked."
+    },
+    {
+      "id": "aisle-racks",
+      "src": "assets-src/photo/us-photo-1553413077-190dd305871c.jpg",
+      "alt": "A long distribution-centre aisle between high racks of boxed stock under strip lights.",
+      "credit": "Ruchindra Gunasekara",
+      "page": "https://unsplash.com/photos/large-warhause-GK8x_XCcDZg",
+      "download": "https://images.unsplash.com/photo-1553413077-190dd305871c?w=2400&q=85&fm=jpg",
+      "licence": "unsplash",
+      "focus": "50% 50%",
+      "notes": "No people. Carton print illegible at display sizes."
+    },
+    {
+      "id": "forklift",
+      "src": "assets-src/photo/us-photo-1645736315000-6f788915923b.jpg",
+      "alt": "A reach truck carrying a wrapped pallet past numbered storage racks, slightly motion-blurred.",
+      "credit": "Bernd Dittrich",
+      "page": "https://unsplash.com/photos/a-forklift-driving-through-a-warehouse-filled-with-pallets-F2C_mSrb6iM",
+      "download": "https://images.unsplash.com/photo-1645736315000-6f788915923b?w=2400&q=85&fm=jpg",
+      "licence": "unsplash",
+      "focus": "45% 55%",
+      "notes": "Operator not identifiable (blur). No legible brand on the truck; product cartons blurred."
+    },
+    {
+      "id": "aisle-dark",
+      "src": "assets-src/photo/px-30341205.jpg",
+      "alt": "A dim warehouse aisle between tall shelves, lit by a line of ceiling lamps.",
+      "credit": "Othmane Ettalbi",
+      "page": "https://www.pexels.com/photo/dimly-lit-warehouse-aisle-with-tall-shelves-30341205/",
+      "download": "https://images.pexels.com/photos/30341205/pexels-photo-30341205.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "50% 50%",
+      "notes": "No people."
+    },
+    {
+      "id": "ceiling",
+      "src": "assets-src/photo/px-26609603.jpg",
+      "alt": "Looking up at lamps, fans and pallet racking in a high-ceilinged warehouse.",
+      "credit": "Shuaizhi Tian",
+      "page": "https://www.pexels.com/photo/lights-on-ceiling-in-warehouse-26609603/",
+      "download": "https://images.pexels.com/photos/26609603/pexels-photo-26609603.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "50% 40%",
+      "notes": "No people."
+    },
+    {
+      "id": "loader",
+      "src": "assets-src/photo/px-4968429.jpg",
+      "alt": "A worker, seen from behind, wheeling a tall stack of cartons along a city street.",
+      "credit": "Tim Durgan",
+      "page": "https://www.pexels.com/photo/faceless-male-loader-carrying-heavy-carton-boxes-4968429/",
+      "download": "https://images.pexels.com/photos/4968429/pexels-photo-4968429.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "45% 45%",
+      "notes": "Face not visible (described as unrecognisable by the source)."
+    },
+    {
+      "id": "handover",
+      "src": "assets-src/photo/px-6994138.jpg",
+      "alt": "Two hands passing a padded parcel from one person to another.",
+      "credit": "Kindel Media",
+      "page": "https://www.pexels.com/photo/a-person-handing-over-delivery-packages-6994138/",
+      "download": "https://images.pexels.com/photos/6994138/pexels-photo-6994138.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "50% 50%",
+      "notes": "Hands only."
+    },
+    {
+      "id": "courier",
+      "src": "assets-src/photo/px-7843956.jpg",
+      "alt": "A courier in a hi-vis vest checks parcel labels on the passenger seat of a van; the face is out of frame.",
+      "credit": "Kampus Production",
+      "page": "https://www.pexels.com/photo/a-person-holding-a-box-7843956/",
+      "download": "https://images.pexels.com/photos/7843956/pexels-photo-7843956.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "55% 60%",
+      "notes": "Face out of frame. Labels illegible."
+    },
+    {
+      "id": "boxes",
+      "src": "assets-src/photo/px-17260158.jpg",
+      "alt": "Close-up of the corners of stacked cardboard boxes in soft light.",
+      "credit": "Harper Sunday",
+      "page": "https://www.pexels.com/photo/stack-of-cardboard-boxes-17260158/",
+      "download": "https://images.pexels.com/photos/17260158/pexels-photo-17260158.jpeg?w=2400",
+      "licence": "pexels",
+      "focus": "50% 40%",
+      "notes": "Small print on one box is illegible at display size."
+    },
+    {
+      "id": "crates",
+      "src": "assets-src/photo/us-photo-1780401573423-8ed2d8e469d8.jpg",
+      "alt": "Head-high stacks of colourful plastic crates outside a market shed.",
+      "credit": "Kelvin Zyteng",
+      "page": "https://unsplash.com/photos/many-colorful-plastic-crates-are-stacked-high-outdoors-V-_zwxAuFYs",
+      "download": "https://images.unsplash.com/photo-1780401573423-8ed2d8e469d8?w=2400&q=85&fm=jpg",
+      "licence": "unsplash",
+      "focus": "45% 60%",
+      "notes": "No people. Crate markings illegible."
+    },
+    {
+      "id": "crates-hold",
+      "src": "assets-src/photo/us-photo-1780223280024-05fbcd414fb5.jpg",
+      "alt": "Empty white plastic crates piled inside a rusted container, lit from an opening above.",
+      "credit": "runda choo",
+      "page": "https://unsplash.com/photos/a-pile-of-white-plastic-crates-inside-a-rusty-container-iRSU7h7w9UM",
+      "download": "https://images.unsplash.com/photo-1780223280024-05fbcd414fb5?w=2400&q=85&fm=jpg",
+      "licence": "unsplash",
+      "focus": "50% 55%",
+      "notes": "No people."
+    }
+  ],
+  "videos": [
+    {
+      "id": "sunrise",
+      "src": "assets-src/video/4679770-hd_1920_1080_25fps.mp4",
+      "alt": "Time-lapse-steady shot of the sun rising through haze over a dense city, birds crossing the frame.",
+      "credit": "vinay chuphal",
+      "page": "https://www.pexels.com/video/video-of-cityscape-during-dawn-4679770/",
+      "download": "https://videos.pexels.com/video-files/4679770/4679770-hd_1920_1080_25fps.mp4",
+      "licence": "pexels",
+      "clip": {
+        "start": 6,
+        "length": 12,
+        "fade": 1.5
+      },
+      "notes": "Location not stated by the source; none claimed on the site."
+    },
+    {
+      "id": "forklift-pallets",
+      "src": "assets-src/video/6194507-hd_1280_720_30fps.mp4",
+      "alt": "A forklift lifts pallets beside towering stacks of empty pallets in a warehouse.",
+      "credit": "Andi Farruku",
+      "page": "https://www.pexels.com/video/forklift-in-a-warehouse-6194507/",
+      "download": "https://videos.pexels.com/video-files/6194507/6194507-hd_1280_720_30fps.mp4",
+      "licence": "pexels",
+      "clip": {
+        "start": 2,
+        "length": 10,
+        "fade": 1.2
+      },
+      "notes": "Operator small in frame, not identifiable."
+    },
+    {
+      "id": "twilight",
+      "src": "assets-src/video/12562385_1920_1080_30fps.mp4",
+      "alt": "A city skyline seen across the sea at twilight as the lights come on.",
+      "credit": "aksinfo7 universe",
+      "page": "https://www.pexels.com/video/twilight-over-mumbai-city-skyline-29063028/",
+      "download": "https://videos.pexels.com/video-files/29063028/12562385_1920_1080_30fps.mp4",
+      "licence": "pexels",
+      "clip": {
+        "start": 0.2,
+        "length": 5.4,
+        "fade": 1
+      },
+      "notes": "No people."
+    }
+  ],
+  "panoramas": [
+    {
+      "id": "warehouse-360",
+      "src": "assets-src/empty_warehouse_01.jpg",
+      "alt": "A 360-degree photograph of an empty warehouse with a concrete floor and arched roof under fluorescent light.",
+      "credit": "Sergej Majboroda / Poly Haven",
+      "page": "https://polyhaven.com/a/empty_warehouse_01",
+      "download": "https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/empty_warehouse_01.jpg",
+      "md5": "c8bade16362fe4ffcc2f8c176b84daba",
+      "licence": "cc0",
+      "notes": "Captured 15 May 2020. An empty, disused hall: not a working depot and not a Firstlight site."
+    }
+  ]
+}
