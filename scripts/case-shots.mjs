@@ -52,6 +52,23 @@ const shots = [
     },
   },
   {
+    file: 'story.webp',
+    vp: desktop,
+    path: '/',
+    width: 1600,
+    run: async (page) => {
+      // step 3 of 8, mid-step: the routes have untangled and the distance card has updated
+      await page.evaluate(() => {
+        const li = document.querySelectorAll('.story__step')[2];
+        const b = li.getBoundingClientRect();
+        // the step's text at the reading line, with the routes fully drawn
+        window.scrollTo(0, b.top + window.scrollY + b.height * 0.8 - innerHeight * 0.55);
+      });
+      await page.waitForSelector('.scard.is-on', { timeout: 30000 });
+      await sleep(2500);
+    },
+  },
+  {
     file: 'tower.webp',
     vp: desktop,
     path: '/app',
@@ -115,6 +132,8 @@ try {
   for (const s of shots) {
     const page = await browser.newPage();
     await page.setViewport(s.vp);
+    // the console offers its tour to first-time visitors; keep it out of the screenshots
+    await page.evaluateOnNewDocument(() => localStorage.setItem('firstlight:tour', 'done'));
     await page.goto(`${base}${s.path}`, { waitUntil: 'load' });
     await s.run(page);
     const png = await page.screenshot({ type: 'png' });

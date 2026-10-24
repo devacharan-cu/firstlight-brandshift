@@ -174,18 +174,25 @@
   padding-top: 18vh;
 }
 
+/* steps out of focus recede by colour, not opacity, so their text still meets contrast */
 .story__card {
   max-width: 460px;
-  opacity: 0.28;
-  transform: translateY(18px);
-  transition:
-    opacity 600ms var(--ease),
-    transform 700ms var(--ease);
+  transform: translateY(18px) scale(0.985);
+  transform-origin: left center;
+  transition: transform 700ms var(--ease);
+}
+
+.story__card h3 {
+  color: var(--ink-3);
+  transition: color 500ms var(--ease);
 }
 
 .story__step.is-on .story__card {
-  opacity: 1;
   transform: none;
+}
+
+.story__step.is-on .story__card h3 {
+  color: var(--ink);
 }
 
 .story__time {
@@ -538,14 +545,17 @@
 
   .story__step,
   .story__step:first-child {
-    min-height: 90vh;
-    min-height: 90svh;
+    min-height: 85vh;
+    min-height: 85svh;
     align-items: flex-end;
-    padding: 0 0 5vh;
+    padding: 0;
   }
 
+  /* each step's card holds at the foot of the screen while its step is being read */
   .story__card {
-    position: relative;
+    position: sticky;
+    bottom: 12px;
+    margin-bottom: 12px;
     z-index: 2;
     padding: 20px;
     border-radius: var(--r);
@@ -821,5 +831,85 @@
   .tour__card,
   .tour-offer {
     animation: none;
+  }
+}
+
+/* ─── Where to next (end of every public page) ───────────────────────────── */
+.next {
+  padding-block: clamp(48px, 7vw, 88px);
+  border-top: 1px solid var(--rule);
+  background: var(--paper-deep);
+}
+
+.next__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.next__card {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  height: 100%;
+  padding: 22px 56px 22px 22px;
+  border-radius: var(--r);
+  background: var(--surface);
+  box-shadow: var(--shadow-1), inset 0 0 0 1px var(--rule);
+  text-decoration: none;
+  transition:
+    transform 380ms var(--ease),
+    box-shadow 380ms var(--ease);
+}
+
+.next__kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber-text);
+}
+
+.next__title {
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.next__go {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  margin-top: -14px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.9rem;
+  transition: transform 300ms var(--ease), background-color 200ms ease;
+}
+
+@media (hover: hover) {
+  .next__card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-2), inset 0 0 0 1px var(--rule);
+  }
+
+  .next__card:hover .next__go {
+    transform: translateX(3px);
+    background: var(--amber);
+    color: var(--ink);
+  }
+}
+
+@media (max-width: 760px) {
+  .next__list {
+    grid-template-columns: 1fr;
   }
 }

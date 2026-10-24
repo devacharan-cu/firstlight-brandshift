@@ -49,7 +49,7 @@ function Hero() {
             <span className="mono">1</span> Scroll a real simulated day
           </li>
           <li>
-            <span className="mono">2</span> Plan 300 orders in your browser
+            <span className="mono">2</span> Plan a day of orders in your browser
           </li>
           <li>
             <span className="mono">3</span> Run the day in the console

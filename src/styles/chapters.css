@@ -932,14 +932,16 @@ input[type='range'] {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 24px 22px;
-  border: 1.5px solid var(--rule-strong);
-  background: var(--paper);
+  padding: 26px 24px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-l);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
 }
 
 .tier--featured {
-  border: 2px solid var(--ink);
-  box-shadow: var(--shadow-print);
+  border: 1.5px solid var(--ink);
+  box-shadow: var(--shadow-2);
 }
 
 .tier__flag {
@@ -947,8 +949,8 @@ input[type='range'] {
   top: -12px;
   left: 18px;
   background: var(--amber);
-  border: 1.5px solid var(--ink);
-  padding: 2px 8px 1px;
+  border-radius: 999px;
+  padding: 3px 10px 2px;
   font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.1em;

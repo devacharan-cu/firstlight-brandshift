@@ -23,6 +23,13 @@ function inlineCss(): Plugin {
           const tag = new RegExp(`<link rel="stylesheet"[^>]*href="/${c.fileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`);
           if (tag.test(html)) html = html.replace(tag, () => `<style>${String(c.source)}</style>`);
         }
+        // Preload the two Latin text fonts so they usually arrive before first paint and
+        // headings don't re-wrap when the fallback is swapped out.
+        const fonts = Object.values(bundle)
+          .filter((f) => f.type === 'asset' && /geist(-mono)?-latin-wght-normal-.*\.woff2$/.test(f.fileName))
+          .map((f) => `<link rel="preload" href="/${f.fileName}" as="font" type="font/woff2" crossorigin>`)
+          .join('');
+        html = html.replace('<meta name="theme-color"', () => `${fonts}<meta name="theme-color"`);
         file.source = html;
       }
     },

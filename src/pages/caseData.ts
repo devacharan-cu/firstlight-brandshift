@@ -6,15 +6,23 @@
 /** Set to BrandShift's real contact URL (mailto: or booking link) before publishing. */
 export const BRANDSHIFT_CONTACT = '';
 
+/** Measured 24 Oct 2026 on the build machine against `npm run preview` (raw reports in .lh/p4/). */
 export const METRICS: { v: string; k: string; n: string }[] = [
-  { v: '—', k: 'Lighthouse performance, mobile', n: 'Filled in after the final measurement run' },
+  { v: '89–90', k: 'Lighthouse performance, home, mobile', n: 'Simulated slow 4G and 4× CPU, three runs; 100 on desktop' },
+  { v: '100', k: 'Lighthouse accessibility', n: 'Home, platform, case study, console and depot, mobile' },
+  { v: '0', k: 'Cumulative layout shift', n: 'Every page measured, mobile and desktop' },
+  { v: '2.2–2.7 s', k: 'Largest contentful paint, mobile', n: 'Slow-4G simulation; 0.5–0.6 s on desktop' },
+  { v: '93 KB', k: 'JavaScript for the home page’s first view', n: 'Gzipped; everything else loads when it’s needed' },
+  { v: '0.3 s', k: 'Planning 300 orders', n: 'In a Web Worker, headless Chrome on the build machine' },
+  { v: '49', k: 'Unit tests', n: 'Solver, dispatch operations and CSV import, all passing' },
+  { v: '93', k: 'Browser checks', n: '25 pages at three sizes, plus 18 keyboard and motion checks, all passing' },
 ];
 
 export const COUNTS = {
-  pages: 0,
+  pages: 15,
   consoleScreens: 9,
-  unitTests: 0,
-  browserChecks: 0,
+  unitTests: 49,
+  browserChecks: 93,
   photos: 14,
   clips: 3,
 };
@@ -37,6 +45,15 @@ export const SHOTS: Shot[] = [
     alt: 'Screenshot of the home page: a street map of Kesarnagar with ten coloured van routes, beside a table comparing 358.5 km on 12 vans with 269.0 km on 10.',
     title: 'The Untangle.',
     note: 'The home page’s signature: 300 orders planned in the browser, the manual plan beside it, every figure computed.',
+    w: 1600,
+    h: 1000,
+    layout: 'wide',
+  },
+  {
+    file: 'story.webp',
+    alt: 'Screenshot of the home page story: step 3 of 8, the untangled routes on the city map with a card showing 206.6 km crossed out and 147.1 km beside it.',
+    title: 'A day in one scroll.',
+    note: 'The home page’s pinned story: the map follows one real simulated day while the steps scroll past beside it.',
     w: 1600,
     h: 1000,
     layout: 'wide',

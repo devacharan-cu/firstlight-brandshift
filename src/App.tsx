@@ -3,6 +3,7 @@ import { useDocumentMeta, useLocation } from './router';
 import { findRoute, getLoaded } from './routes';
 import { SiteHeader } from './shell/SiteHeader';
 import { SiteFooter } from './shell/SiteFooter';
+import { NextSteps } from './shell/NextSteps';
 import { AppShell } from './shell/AppShell';
 import { initSimulation } from './sim/store';
 import { refreshDaylight, startDaylight } from './lib/daylight';
@@ -55,6 +56,7 @@ export function App() {
           <main id="main" tabIndex={-1} data-clock="10:00">
             {content}
           </main>
+          <NextSteps path={loc.path} />
           <SiteFooter />
         </>
       )}

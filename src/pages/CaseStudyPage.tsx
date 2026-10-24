@@ -22,6 +22,8 @@ const DECISIONS = [
   { t: 'Physically possible edits', d: 'Once a drop is done, it is frozen. Urgent orders, moves and breakdowns only change what is still ahead, and late vans keep their own departure times.' },
   { t: 'Re-plan as little as possible', d: 'Our first disruption design re-ordered each van’s remaining stops and saved almost nothing. We changed it to re-plan only the vans that need it, and wrote that finding into a guide.' },
   { t: 'The plan on a real floor', d: 'The depot page projects today’s staging lanes onto a real 360° photograph in perspective, with a custom WebGL viewer and no 3D library.' },
+  { t: 'One scroll, one day', d: 'The home page tells the product as a single delivery day: a pinned map that follows one real simulated plan from overnight orders to the evening report, so a first-time visitor understands it before touching anything.' },
+  { t: 'Guided, not guessed', d: 'A five-step console tour, offered once and always skippable, plus a clear next step at the end of every page. Nobody has to work out where to click first.' },
   { t: 'Fast before it’s clever', d: 'Prerendered pages, inlined CSS, code-split routes, lazy media with posters and placeholders, no preloader. Heavy work waits until it’s needed.' },
 ];
 

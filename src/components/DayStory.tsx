@@ -90,6 +90,9 @@ interface StoryData {
   disruption: DisruptionResult | null;
 }
 
+/** Where on screen a step counts as "being read": below the pinned map on phones. */
+const readingLine = () => window.innerHeight * (window.innerWidth <= 900 ? 0.8 : 0.55);
+
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 const clamp01 = (t: number) => Math.max(0, Math.min(1, t));
 const km = (m: number) => (m / 1000).toFixed(1);
@@ -338,9 +341,19 @@ export function DayStory() {
       const vh = window.innerHeight;
       const total = Math.max(1, r.height - vh);
       const p = clamp01(-r.top / total);
-      const x = p * STEPS.length;
-      const s = Math.min(STEPS.length - 1, Math.floor(x));
-      const local = clamp01(x - s);
+      // The active step is the one whose text is at the middle of the screen, so the stage always
+      // shows what the reader is reading; local progress is how far that text has travelled.
+      const mid = readingLine();
+      const items = el.querySelectorAll<HTMLElement>('.story__step');
+      let s = 0;
+      let local = 0;
+      items.forEach((li, k) => {
+        const b = li.getBoundingClientRect();
+        if (b.top <= mid) {
+          s = k;
+          local = clamp01((mid - b.top) / Math.max(1, b.height));
+        }
+      });
       progress.current = { step: s, local };
       el.style.setProperty('--story-p', p.toFixed(4));
       el.style.setProperty('--step-p', local.toFixed(3));
@@ -368,9 +381,11 @@ export function DayStory() {
   }, []);
 
   const goTo = (k: number) => {
-    const el = body.current!;
-    const total = el.getBoundingClientRect().height - window.innerHeight;
-    const top = el.getBoundingClientRect().top + window.scrollY + (total * (k + 0.5)) / STEPS.length;
+    const li = body.current!.querySelectorAll<HTMLElement>('.story__step')[k];
+    if (!li) return;
+    const b = li.getBoundingClientRect();
+    // put the middle of that step's text at the reading line used above
+    const top = b.top + window.scrollY + b.height * 0.6 - readingLine();
     window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
   };
 
