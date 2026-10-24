@@ -182,7 +182,7 @@ export function LiveMap({ view, scenario, highlight = -1, focusVan, onSelectVan,
           ctx.fill();
           ctx.stroke();
           ctx.restore();
-          ctx.font = '600 9px "Overpass Mono", monospace';
+          ctx.font = '600 9px "Geist Mono Variable", monospace';
           ctx.fillStyle = ink(0.9);
           ctx.fillText(String(k + 1).padStart(2, '0'), x + 8, y - 6);
         });

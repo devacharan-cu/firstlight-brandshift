@@ -6,6 +6,7 @@ import { Icon } from './icons';
 import { clock, pause, play, setSimTime, setSpeed, useSim } from '../sim/store';
 import { PROFILE_UNIT } from '../sim/scenario';
 import { useEnsurePlan } from '../app/common';
+import { Tour, startTour } from './Tour';
 
 const NAV = [
   { to: '/app', label: 'Control tower', icon: 'tower' },
@@ -136,11 +137,15 @@ export function AppShell({ children }: { children: ReactNode }) {
         <header className="console__bar">
           <h1 className="console__title">{title}</h1>
           <LiveBadge />
+          <button type="button" className="console__tour" onClick={startTour}>
+            <span aria-hidden>?</span> Tour
+          </button>
           <SimClock />
         </header>
         <main id="console-main" className="console__page" tabIndex={-1} data-clock="11:00">
           {children}
         </main>
+        <Tour />
       </div>
     </div>
   );

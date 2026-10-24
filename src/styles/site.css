@@ -97,7 +97,7 @@
 .section-title {
   margin-top: 12px;
   font-size: clamp(2rem, 1.1rem + 2.6vw, 3.6rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 1;
   letter-spacing: -0.035em;
   max-width: 20ch;
@@ -125,17 +125,17 @@
 
 .nav__links a[aria-current='page'],
 .nav__mega-btn.is-active {
-  border-bottom-color: var(--amber-text);
+  background: rgb(21 19 15 / 0.07);
+  box-shadow: inset 0 0 0 1px rgb(21 19 15 / 0.06);
 }
 
 .nav__mega-btn {
+  gap: 6px;
   border: 0;
   background: none;
-  padding: 6px 0;
   font: inherit;
-  font-weight: 600;
+  font-weight: inherit;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
   color: inherit;
 }
 
@@ -144,9 +144,6 @@
   margin-left: 2px;
 }
 
-.nav__mega-btn:hover {
-  border-bottom-color: currentColor;
-}
 
 .nav__mega-btn[aria-expanded='true'] span {
   display: inline-block;
@@ -173,7 +170,9 @@
 }
 
 .masthead.is-overlay .btn--quiet {
-  border-color: rgb(241 232 216 / 0.7);
+  border-color: rgb(241 232 216 / 0.45);
+  background: rgb(255 255 255 / 0.08);
+  color: var(--field-ink);
 }
 
 .mega {
@@ -221,7 +220,7 @@
   gap: 1px;
   padding: 9px 10px;
   margin-inline: -10px;
-  border-radius: 3px;
+  border-radius: var(--r-s);
   text-decoration: none;
 }
 
@@ -332,7 +331,7 @@
 .hero-field__title {
   margin-top: 18px;
   font-size: clamp(2.8rem, 1rem + 6.2vw, 7rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 0.9;
   letter-spacing: -0.05em;
 }
@@ -362,17 +361,16 @@
 }
 
 .btn--light {
-  border-color: var(--field-ink);
+  border-color: rgb(241 232 216 / 0.38);
   color: var(--field-ink);
-  background: transparent;
+  background: rgb(255 255 255 / 0.06);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .btn--light:hover {
-  background: rgb(241 232 216 / 0.1);
-}
-
-.hero-field .btn--primary {
-  box-shadow: 3px 3px 0 #000;
+  border-color: var(--field-ink);
+  background: rgb(255 255 255 / 0.12);
 }
 
 .hero-field__foot {
@@ -395,7 +393,7 @@
 .hero__h2 {
   margin-top: 16px;
   font-size: clamp(2.2rem, 1.2rem + 2.4vw, 3.4rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 0.96;
   letter-spacing: -0.04em;
   text-wrap: balance;
@@ -469,9 +467,9 @@
 
 .fieldbreak__title {
   font-size: clamp(2rem, 1rem + 3.4vw, 4.6rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 0.98;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.038em;
   max-width: 18ch;
   text-wrap: balance;
 }
@@ -585,7 +583,7 @@
 
 .module__name {
   font-size: 1.9rem;
-  font-weight: 800;
+  font-weight: 650;
   letter-spacing: -0.03em;
   line-height: 1;
 }
@@ -652,7 +650,7 @@
 
 .depot-teaser h2 {
   font-size: clamp(2rem, 1.1rem + 2.8vw, 3.8rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 1;
   letter-spacing: -0.04em;
   max-width: 16ch;
@@ -703,7 +701,7 @@
 }
 
 .ind-card__name {
-  font-weight: 800;
+  font-weight: 650;
   font-size: 1.15rem;
   letter-spacing: -0.01em;
 }
@@ -744,9 +742,9 @@
 
 .home-close h2 {
   font-size: clamp(2.4rem, 1.2rem + 3.6vw, 5rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 0.95;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.038em;
   max-width: 13ch;
 }
 
@@ -923,9 +921,9 @@
 .pagehead h1 {
   margin-top: 14px;
   font-size: clamp(2.5rem, 1.2rem + 4vw, 5.2rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 0.95;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.038em;
   max-width: 17ch;
   text-wrap: balance;
 }
@@ -1040,10 +1038,10 @@
   z-index: 2;
   min-width: 34px;
   height: 26px;
-  margin: -13px 0 0 -17px;
+  margin: 8px 0 0 -17px;
   padding: 0 6px;
   border: 2px solid var(--c);
-  border-radius: 3px;
+  border-radius: var(--r-s);
   background: rgb(17 14 10 / 0.78);
   color: #fff6e8;
   font-family: var(--mono);
@@ -1091,7 +1089,7 @@
 }
 
 .lanecard__title {
-  font-weight: 800;
+  font-weight: 650;
 }
 
 .lanecard__list {
@@ -1141,8 +1139,11 @@
     margin-top: 12px;
   }
 
+  /* landscape on phones too: a portrait frame is too narrow to show the whole row of lanes */
   .pano__stage {
-    height: 62svh;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 5 / 4;
   }
 }
 
@@ -1181,7 +1182,7 @@
 }
 
 .flow__name {
-  font-weight: 800;
+  font-weight: 650;
   font-size: 1.15rem;
 }
 
@@ -1210,7 +1211,7 @@
 .modrow__claim {
   margin-top: 12px;
   font-size: clamp(1.9rem, 1.1rem + 2.2vw, 3.2rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 1;
   letter-spacing: -0.035em;
   max-width: 18ch;
@@ -1463,7 +1464,7 @@
 }
 
 .connector__name {
-  font-weight: 800;
+  font-weight: 650;
   font-size: 1.12rem;
 }
 
@@ -1495,7 +1496,7 @@
   margin: 0;
   background: var(--night);
   color: #efe4d0;
-  border-radius: 4px;
+  border-radius: var(--r-s);
   overflow: hidden;
 }
 
@@ -1536,7 +1537,7 @@
 .dropzone {
   padding: 28px;
   border: 2px dashed var(--rule-strong);
-  border-radius: 4px;
+  border-radius: var(--r-s);
   text-align: center;
 }
 
@@ -1549,7 +1550,7 @@
   width: 100%;
   padding: 12px;
   border: 1.5px solid var(--ink);
-  border-radius: 3px;
+  border-radius: var(--r-s);
   background: rgb(255 255 255 / 0.35);
   font-size: 0.82rem;
   resize: vertical;
@@ -1616,7 +1617,7 @@
 
 .rules h3 {
   font-size: 1.2rem;
-  font-weight: 800;
+  font-weight: 650;
 }
 
 .rules p {
@@ -1655,7 +1656,7 @@
 }
 
 .holds dt {
-  font-weight: 800;
+  font-weight: 650;
   font-size: 1.1rem;
 }
 
@@ -1690,7 +1691,7 @@
 
 .security__card h2 {
   font-size: 1.6rem;
-  font-weight: 800;
+  font-weight: 650;
   letter-spacing: -0.02em;
 }
 
@@ -1761,7 +1762,7 @@
 
 .guide__title {
   font-size: 1.4rem;
-  font-weight: 800;
+  font-weight: 650;
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
@@ -1785,7 +1786,7 @@
 .article__head h1 {
   margin-top: 14px;
   font-size: clamp(2.3rem, 1.2rem + 3.4vw, 4.4rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 0.97;
   letter-spacing: -0.04em;
   text-wrap: balance;
@@ -1817,7 +1818,7 @@
 .prose h2 {
   margin-top: 2em;
   font-size: 1.6rem;
-  font-weight: 800;
+  font-weight: 650;
   letter-spacing: -0.02em;
   line-height: 1.15;
 }
@@ -2021,7 +2022,7 @@
   min-height: 46px;
   padding: 10px 12px;
   border: 1.5px solid var(--ink);
-  border-radius: 3px;
+  border-radius: var(--r-s);
   background: rgb(255 255 255 / 0.4);
 }
 
@@ -2101,9 +2102,9 @@
 .notfound h1 {
   margin-top: 14px;
   font-size: clamp(2.4rem, 1.2rem + 4vw, 5rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 0.95;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.038em;
   max-width: 16ch;
 }
 
@@ -2200,7 +2201,7 @@
 .case__decisions h3 {
   margin-top: 8px;
   font-size: 1.2rem;
-  font-weight: 800;
+  font-weight: 650;
   letter-spacing: -0.015em;
   line-height: 1.15;
 }
@@ -2354,7 +2355,7 @@
 .case__close h2 {
   margin-top: 14px;
   font-size: clamp(2.2rem, 1.2rem + 3.4vw, 4.4rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 0.98;
   letter-spacing: -0.04em;
   max-width: 16ch;
@@ -2401,4 +2402,10 @@
   .case__facts {
     grid-template-columns: 1fr;
   }
+}
+
+.masthead.is-overlay .nav__links a:hover,
+.masthead.is-overlay .nav__mega-btn:hover,
+.masthead.is-overlay .nav__links a[aria-current="page"] {
+  background: rgb(255 255 255 / 0.12);
 }

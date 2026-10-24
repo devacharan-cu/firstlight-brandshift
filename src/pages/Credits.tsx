@@ -92,7 +92,7 @@ export default function Credits() {
           Type and code
         </h2>
         <p className="section-lede">
-          Overpass and Overpass Mono, SIL Open Font License, self-hosted. The city, its map, the routing engine and every interface were designed and
+          Geist and Geist Mono by Vercel, SIL Open Font License, self-hosted. The city, its map, the routing engine and every interface were designed and
           built for this site by BrandShift.
         </p>
       </section>

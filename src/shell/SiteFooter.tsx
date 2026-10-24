@@ -67,7 +67,7 @@ export function SiteFooter() {
           invented; any resemblance to real ones is coincidental. Photographs and footage are real, licensed captures of unrelated
           places, used illustratively. See <Link to="/credits">credits</Link>.
         </p>
-        <p>Typeset in Overpass and Overpass Mono (SIL Open Font License). No cookies, no trackers, no third-party requests.</p>
+        <p>Typeset in Geist and Geist Mono (SIL Open Font License). No cookies, no trackers, no third-party requests.</p>
       </div>
     </footer>
   );

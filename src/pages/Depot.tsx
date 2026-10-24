@@ -9,10 +9,14 @@ import { useEnsurePlan } from '../app/common';
 import { Credit, Plate } from '../components/media';
 
 const CAM_H = 1.55; // assumed camera height above the floor, metres
-const LANE_W = 1.15;
-const GAP = 0.45;
-const NEAR = 2.8;
-const FAR = 7.4;
+// The open floor in front of the camera, measured against the photograph: lanes stay inside
+// this rectangle so none of them runs up a wall or under the partitions.
+const FLOOR_W = 6.4; // metres across
+const GAP = 0.24;
+const MAX_LANE_W = 1.1;
+const X_SHIFT = 0.35; // the left partition stands closer to the camera than the right wall
+const NEAR = 2.6;
+const FAR = 5.7;
 
 interface Lane {
   van: number;
@@ -21,9 +25,10 @@ interface Lane {
 }
 
 function lanesFor(n: number): Lane[] {
+  const LANE_W = Math.min(MAX_LANE_W, (FLOOR_W - (n - 1) * GAP) / Math.max(1, n));
   const total = n * LANE_W + (n - 1) * GAP;
   return Array.from({ length: n }, (_, i) => {
-    const x0 = -total / 2 + i * (LANE_W + GAP);
+    const x0 = X_SHIFT - total / 2 + i * (LANE_W + GAP);
     return { van: i, x0, x1: x0 + LANE_W };
   });
 }
@@ -37,6 +42,9 @@ export default function Depot() {
   const [open, setOpen] = useState<number | null>(null);
   const [, units] = PROFILE_UNIT[profile];
   const pano = PANORAMAS['warehouse-360'];
+  // a phone's tall, narrow view starts wider and looking further down, so every lane is in frame
+  const narrow = typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches;
+  const initial = narrow ? { yaw: 0, pitch: -0.3, fov: (100 * Math.PI) / 180 } : undefined;
 
   const used = useMemo(() => (live ? live.routes.map((r, k) => ({ r, k })).filter((x) => x.r.length) : []), [live]);
   const lanes = useMemo(() => lanesFor(used.length).map((l, i) => ({ ...l, van: used[i].k })), [used]);
@@ -87,8 +95,9 @@ export default function Depot() {
         ctx.lineWidth = 1;
         for (let s = 1; s < stops; s++) {
           const z = NEAR + ((FAR - NEAR) * fill * s) / stops;
-          const a = project([l.x0 + 0.15, -CAM_H, z]);
-          const b = project([l.x1 - 0.15, -CAM_H, z]);
+          const inset = (l.x1 - l.x0) * 0.14;
+          const a = project([l.x0 + inset, -CAM_H, z]);
+          const b = project([l.x1 - inset, -CAM_H, z]);
           if (a && b) {
             ctx.beginPath();
             ctx.moveTo(a[0], a[1]);
@@ -132,13 +141,14 @@ export default function Depot() {
           label={`${pano.alt} Today's plan is drawn on the floor as ${lanes.length} staging lanes.`}
           overlay={overlay}
           fallback={fallback}
+          initial={initial}
         >
           {(_cam, project) =>
             showLanes &&
             project &&
             live &&
             lanes.map((l) => {
-              const p = project([(l.x0 + l.x1) / 2, -CAM_H, NEAR - 0.4]);
+              const p = project([(l.x0 + l.x1) / 2, -CAM_H, NEAR]);
               if (!p) return null;
               return (
                 <button

@@ -1,113 +1,79 @@
 /*
- * Overpass draws U+00B7 (middle dot) with zero advance width in every weight, so "a · b"
- * renders as "a ·b". Take that one character from the system's sans-serif instead; if none of
- * these is installed, Overpass's own glyph is used as before. One face per loaded weight: a
- * unicode-range face only combines with faces whose descriptors match exactly.
+ * Metric-matched fallbacks: until Geist arrives, text is set in Arial (or a metric twin) scaled
+ * to Geist's width and line metrics, so the swap doesn't reflow the page. Measured in Chrome
+ * against the self-hosted files: width ratio of a sample paragraph, ascent 1.01 em, descent 0.30 em.
  */
 @font-face {
-  font-family: 'Overpass';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Arial'), local('Segoe UI'), local('Helvetica Neue'), local('Helvetica'), local('Roboto'), local('Noto Sans'),
-    local('DejaVu Sans'), local('Liberation Sans');
-  unicode-range: U+00B7;
-}
-
-@font-face {
-  font-family: 'Overpass';
-  font-style: normal;
-  font-weight: 600;
-  src: local('Arial Bold'), local('Arial-BoldMT'), local('Segoe UI Semibold'), local('Helvetica Neue Medium'), local('Roboto Medium'),
-    local('Arial'), local('Roboto'), local('Noto Sans'), local('DejaVu Sans');
-  unicode-range: U+00B7;
-}
-
-@font-face {
-  font-family: 'Overpass';
-  font-style: normal;
-  font-weight: 800;
-  src: local('Arial Black'), local('Arial Bold'), local('Arial-BoldMT'), local('Segoe UI Black'), local('Helvetica Neue Bold'),
-    local('Roboto Black'), local('Roboto Bold'), local('Arial'), local('Roboto'), local('Noto Sans'), local('DejaVu Sans');
-  unicode-range: U+00B7;
-}
-
-/*
- * Metric-matched fallbacks: until Overpass arrives, text is set in Arial (or a metric twin)
- * scaled to Overpass's width and line metrics, so the swap doesn't reflow the page. Measured
- * in Chrome against the self-hosted files: width ratio of a sample paragraph, ascent 0.88 em,
- * descent 0.38 em.
- */
-@font-face {
-  font-family: 'Overpass Fallback';
-  font-style: normal;
-  font-weight: 400;
+  font-family: 'Geist Fallback';
+  font-weight: 100 549;
   src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('Arimo');
-  size-adjust: 101.04%;
-  ascent-override: 87.09%;
-  descent-override: 37.61%;
+  size-adjust: 104%;
+  ascent-override: 97%;
+  descent-override: 29%;
   line-gap-override: 0%;
 }
 
 @font-face {
-  font-family: 'Overpass Fallback';
-  font-style: normal;
-  font-weight: 600;
+  font-family: 'Geist Fallback';
+  font-weight: 550 900;
   src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Arimo Bold');
-  size-adjust: 96.71%;
-  ascent-override: 90.99%;
-  descent-override: 39.29%;
+  size-adjust: 102%;
+  ascent-override: 99%;
+  descent-override: 29.4%;
   line-gap-override: 0%;
 }
 
 @font-face {
-  font-family: 'Overpass Fallback';
-  font-style: normal;
-  font-weight: 800;
-  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Arimo Bold');
-  size-adjust: 99.67%;
-  ascent-override: 88.29%;
-  descent-override: 38.13%;
-  line-gap-override: 0%;
-}
-
-@font-face {
-  font-family: 'Overpass Mono Fallback';
-  font-style: normal;
-  font-weight: 400 800;
+  font-family: 'Geist Mono Fallback';
   src: local('Courier New'), local('CourierNewPSMT'), local('Liberation Mono'), local('Cousine');
-  size-adjust: 101.82%;
-  ascent-override: 86.43%;
-  descent-override: 37.32%;
+  size-adjust: 100%;
+  ascent-override: 101%;
+  descent-override: 30%;
   line-gap-override: 0%;
 }
 
 /* ─── Tokens ─────────────────────────────────────────────────────────────── */
 :root {
-  --paper: rgb(220 224 223); /* driven by the daylight clock */
-  --paper-deep: rgb(208 213 213);
-  --wash: rgb(176 192 204);
-  --ink: #17140f;
-  --ink-2: rgb(23 20 15 / 0.7);
-  --ink-3: rgb(23 20 15 / 0.52);
-  --rule: rgb(23 20 15 / 0.16);
-  --rule-strong: rgb(23 20 15 / 0.38);
+  /* surfaces */
+  --paper: #f7f5f0;
+  --paper-deep: #efebe3;
+  --surface: #fffdf9;
+  --wash: #e9e3d6;
+  /* ink */
+  --ink: #15130f;
+  --ink-2: rgb(21 19 15 / 0.7);
+  --ink-3: rgb(21 19 15 / 0.54);
+  --rule: rgb(21 19 15 / 0.11);
+  --rule-strong: rgb(21 19 15 / 0.26);
+  /* brand: one warm accent, one cool signal */
   --amber: #f2a93b;
+  --amber-soft: #fbe7c4;
   --amber-deep: #b45f00;
-  --amber-text: #804100; /* amber for small text: 4.5:1 on every paper tone of the day */
+  --amber-text: #804100; /* amber for small text: 4.5:1 on paper */
   --ok: #0e7c86;
   --warn: #b3261e;
-  --night: #15120e;
-  --night-paper: #efe4d0;
+  --night: #100f0d;
+  --night-paper: #f1ebe0;
 
-  --sans: 'Overpass', 'Overpass Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --mono: 'Overpass Mono', 'Overpass Mono Fallback', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --sans: 'Geist Variable', 'Geist Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Geist Mono Variable', 'Geist Mono Fallback', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  /* shape and depth */
+  --r-s: 8px;
+  --r: 14px;
+  --r-l: 22px;
+  --shadow-1: 0 1px 2px rgb(21 19 15 / 0.06), 0 2px 10px -2px rgb(21 19 15 / 0.06);
+  --shadow-2: 0 2px 4px rgb(21 19 15 / 0.05), 0 22px 44px -18px rgb(21 19 15 / 0.24);
+  --shadow-print: var(--shadow-1);
+  /* motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
   --gutter: clamp(16px, 3.2vw, 44px);
-  --max: 1440px;
+  --max: 1360px;
   --strip-h: 30px;
-  --nav-h: 60px;
+  --nav-h: 64px;
   --header-h: calc(var(--strip-h) + var(--nav-h));
-  --shadow-print: 3px 3px 0 var(--ink);
   color-scheme: light;
 }
 
@@ -269,7 +235,7 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  font-weight: 800;
+  font-weight: 650;
   font-size: 1.28rem;
   letter-spacing: -0.03em;
   text-decoration: none;
@@ -282,22 +248,29 @@ p {
 
 .nav__links {
   display: flex;
-  gap: 22px;
-  margin-left: 18px;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 0 14px;
   list-style: none;
   padding: 0;
-  font-size: 0.94rem;
-  font-weight: 600;
+  font-size: 0.93rem;
+  font-weight: 520;
 }
 
-.nav__links a {
+.nav__links a,
+.nav__mega-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 13px;
+  border-radius: 999px;
   text-decoration: none;
-  padding: 6px 0;
-  border-bottom: 2px solid transparent;
+  transition: background-color 160ms ease, color 160ms ease;
 }
 
-.nav__links a:hover {
-  border-bottom-color: var(--ink);
+.nav__links a:hover,
+.nav__mega-btn:hover {
+  background: rgb(21 19 15 / 0.06);
 }
 
 .nav__cta {
@@ -361,46 +334,63 @@ p {
   justify-content: center;
   gap: 10px;
   min-height: 44px;
-  padding: 10px 18px;
-  border: 1.5px solid var(--ink);
-  border-radius: 3px;
+  padding: 10px 20px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
   background: transparent;
-  font-weight: 700;
-  font-size: 0.98rem;
+  font-weight: 560;
+  font-size: 0.96rem;
+  letter-spacing: -0.005em;
   text-decoration: none;
   cursor: pointer;
   transition:
-    transform 120ms ease,
-    box-shadow 120ms ease,
-    background-color 160ms ease;
+    transform 220ms var(--ease),
+    box-shadow 220ms var(--ease),
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
 }
 
 .btn--primary {
   background: var(--amber);
+  border-color: transparent;
   color: var(--ink);
-  box-shadow: var(--shadow-print);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 1px 2px rgb(120 60 0 / 0.18),
+    0 8px 20px -10px rgb(180 95 0 / 0.55);
 }
 
 .btn--primary:hover {
-  background: #f6b955;
+  background: #f5b24b;
 }
 
-.btn--primary:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--ink);
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
 }
 
 .btn--ink {
   background: var(--ink);
-  color: #f3ecdf;
+  border-color: var(--ink);
+  color: #f6f1e7;
+  box-shadow: 0 8px 20px -12px rgb(21 19 15 / 0.6);
 }
 
 .btn--ink:hover {
-  background: #2c261d;
+  background: #2a2620;
+}
+
+.btn--quiet {
+  background: var(--surface);
 }
 
 .btn--quiet:hover {
-  background: rgb(23 20 15 / 0.06);
+  border-color: var(--ink);
 }
 
 .btn:disabled {
@@ -409,6 +399,7 @@ p {
 }
 
 .btn--plan {
+  border-radius: var(--r);
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
@@ -418,7 +409,7 @@ p {
 
 .btn--plan .btn__label {
   font-size: 1.3rem;
-  font-weight: 800;
+  font-weight: 650;
   letter-spacing: -0.01em;
   display: inline-flex;
   align-items: center;
@@ -535,7 +526,7 @@ p {
 
 .chapter h2 {
   font-size: clamp(2rem, 1.1rem + 2.6vw, 3.6rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 1;
   letter-spacing: -0.035em;
   max-width: 17ch;
@@ -617,9 +608,9 @@ p {
 .hero h1 {
   margin-top: 16px;
   font-size: clamp(2.5rem, 1.3rem + 2.7vw, 3.7rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 0.94;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.038em;
   text-wrap: balance;
 }
 
@@ -682,7 +673,7 @@ p {
   line-height: 1.45;
   padding: 10px 12px;
   border: 1px dashed var(--rule-strong);
-  border-radius: 3px;
+  border-radius: var(--r-s);
   min-height: 3.2em;
 }
 

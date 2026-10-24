@@ -202,14 +202,14 @@ export function drawBase(ctx: CanvasRenderingContext2D, city: City, t: Transform
 
   // labels
   const fontPx = detail === 'full' ? 10 : 8.5;
-  ctx.font = `600 ${fontPx}px "Overpass Mono", ui-monospace, monospace`;
+  ctx.font = `600 ${fontPx}px "Geist Mono Variable", ui-monospace, monospace`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   (ctx as CanvasRenderingContext2D & { letterSpacing?: string }).letterSpacing = '0.16em';
   ctx.fillStyle = ink(0.5);
   for (const d of city.districts) ctx.fillText(d.name.toUpperCase(), sx(t, d.x), sy(t, d.y));
   ctx.fillStyle = 'rgba(64, 92, 52, 0.75)';
-  ctx.font = `500 ${fontPx - 1}px "Overpass Mono", ui-monospace, monospace`;
+  ctx.font = `500 ${fontPx - 1}px "Geist Mono Variable", ui-monospace, monospace`;
   for (const p of city.parks) ctx.fillText(p.name.toUpperCase(), sx(t, p.cx), sy(t, p.cy));
 
   // river name along its course
@@ -224,7 +224,7 @@ export function drawBase(ctx: CanvasRenderingContext2D, city: City, t: Transform
   ctx.translate(sx(t, rx), sy(t, ry));
   ctx.rotate(ang);
   ctx.fillStyle = 'rgba(40, 72, 94, 0.7)';
-  ctx.font = `500 ${fontPx}px "Overpass Mono", ui-monospace, monospace`;
+  ctx.font = `500 ${fontPx}px "Geist Mono Variable", ui-monospace, monospace`;
   (ctx as CanvasRenderingContext2D & { letterSpacing?: string }).letterSpacing = '0.5em';
   ctx.fillText('KESAR RIVER', 0, 0);
   ctx.restore();

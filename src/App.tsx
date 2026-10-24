@@ -6,6 +6,7 @@ import { SiteFooter } from './shell/SiteFooter';
 import { AppShell } from './shell/AppShell';
 import { initSimulation } from './sim/store';
 import { refreshDaylight, startDaylight } from './lib/daylight';
+import { refreshReveal } from './lib/reveal';
 
 export function App() {
   const loc = useLocation();
@@ -22,6 +23,8 @@ export function App() {
 
   useEffect(() => {
     refreshDaylight();
+    // after the new page has laid out
+    const raf = requestAnimationFrame(() => requestAnimationFrame(refreshReveal));
     if (first.current) {
       first.current = false;
       return;
@@ -31,6 +34,7 @@ export function App() {
     const main = document.getElementById(route.chrome === 'app' ? 'console-main' : 'main');
     main?.focus({ preventScroll: true });
     setAnnounce(route.title);
+    return () => cancelAnimationFrame(raf);
   }, [loc.path, route.chrome, route.title]);
 
   const content = Page ? <Page /> : <div className="page-loading" aria-busy="true" />;

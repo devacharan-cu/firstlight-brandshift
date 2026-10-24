@@ -284,7 +284,7 @@ export function Untangle({ compact, startRevealed = false }: { compact: boolean;
 
     // van numbers — identity never rests on colour alone
     if (showOpt && d.opt && !compact) {
-      ctx.font = '600 9.5px "Overpass Mono", ui-monospace, monospace';
+      ctx.font = '600 9.5px "Geist Mono Variable", ui-monospace, monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       d.opt.badges.forEach(([x, y], k) => {

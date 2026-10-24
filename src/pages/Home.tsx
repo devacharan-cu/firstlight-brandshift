@@ -1,10 +1,6 @@
 import { Untangle } from '../components/Untangle';
-import { Driver } from '../components/Driver';
-import { Disruption } from '../components/Disruption';
-import { Tracking } from '../components/Tracking';
-import { DayReport } from '../components/DayReport';
+import { DayStory } from '../components/DayStory';
 import { Credit, Loop, Photo } from '../components/media';
-import { FieldBreak } from '../components/FieldBreak';
 import { Link } from '../router';
 import { useMediaQuery } from '../lib/hooks';
 import { useSim } from '../sim/store';
@@ -41,13 +37,24 @@ function Hero() {
           every customer when to expect you.
         </p>
         <div className="hero-field__ctas">
-          <a className="btn btn--primary" href="#untangle">
-            Plan tomorrow’s orders ↓
+          <a className="btn btn--primary" href="#story">
+            See a day in two minutes <span aria-hidden>↓</span>
           </a>
-          <Link className="btn btn--light" to="/app">
-            Open the console
-          </Link>
+          <a className="btn btn--light" href="#untangle">
+            Plan orders yourself
+          </a>
         </div>
+        <ol className="hero-guide" aria-label="How to explore this site">
+          <li>
+            <span className="mono">1</span> Scroll a real simulated day
+          </li>
+          <li>
+            <span className="mono">2</span> Plan 300 orders in your browser
+          </li>
+          <li>
+            <span className="mono">3</span> Run the day in the console
+          </li>
+        </ol>
       </div>
       <div className="wrap hero-field__foot">
         <span className="mono">05:31 · first light over a city</span>
@@ -63,7 +70,7 @@ function Planning() {
   return (
     <section className="hero" id="untangle" data-clock="05:40" aria-labelledby="untangle-title">
       <div className="hero__intro">
-        <p className="label eyebrow">05:40 · The plan</p>
+        <p className="label eyebrow">Your turn · live planner</p>
         <h2 id="untangle-title" className="hero__h2">
           {n} orders. One depot. <em>Untangle</em> them.
         </h2>
@@ -200,23 +207,10 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <div id="story">
+        <DayStory />
+      </div>
       <Planning />
-      <FieldBreak photo="dock-door" no="01" time="06:00" title="The doors open at six." clock="06:00">
-        By then every van’s load sheet is printed, last drop first, so the first delivery is nearest the door.
-      </FieldBreak>
-      <Driver />
-      <FieldBreak photo="city-haze" no="02" time="07:30" title="Half the city is still waking up." clock="07:20">
-        The plan has to survive whatever the morning does to it.
-      </FieldBreak>
-      <Disruption />
-      <FieldBreak photo="handover" no="03" time="14:00" title="The only moment the customer sees." clock="13:50">
-        Everything before it is invisible. Whether it happens when you said it would is not.
-      </FieldBreak>
-      <Tracking />
-      <FieldBreak video="forklift-pallets" no="04" time="18:40" title="Back at the depot, the next day is already arriving." clock="18:40">
-        Pallets in, crates staged, tomorrow’s orders loading into the planner.
-      </FieldBreak>
-      <DayReport />
       <Modules />
       <DepotTeaser />
       <Industries />
